@@ -1,12 +1,11 @@
-import React from 'react'
-import Sidebar from './Sidebar'
+import Sidebar from "./Sidebar";
 
 function Details() {
   return (
     <div style={{ display: "flex", alignItems: "stretch", height: "100dvh" }}>
-        <Sidebar/>
+      <Sidebar />
     </div>
-  )
+  );
 }
 
-export default Details
+export default Details;

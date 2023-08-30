@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
-
 import Sidebar from "./Sidebar";
 import {
   Avatar,
@@ -13,7 +13,6 @@ import {
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-
 
 function Home() {
   const [userVal, setUserVal] = React.useState("");
@@ -40,7 +39,7 @@ function Home() {
         setTemp(data.hourly.temperature_2m[new Date().getHours()]);
         setAllTemp(data.hourly.temperature_2m);
         setAllTime(
-          data.hourly.time.map((each) => {
+          data.hourly.time.map((each: string) => {
             return each.slice(11, 13);
           })
         );
@@ -335,19 +334,26 @@ function Home() {
                   margin: "10px",
                   padding: "10px",
                   // borderRadius: "20px",
-                  backgroundColor:"transparent",
+                  backgroundColor: "transparent",
                   color: "white",
                 }}
               >
                 {latitude && longitude && (
                   <MapContainer
                     key={`${latitude}-${longitude}`} // <-- Add this line
+                    // @ts-ignore
                     center={[latitude, longitude]}
                     zoom={13}
-                    style={{ width: "100%", height: "100%",borderRadius: "20px", }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "20px",
+                    }}
                   >
                     <TileLayer
+                      // @ts-ignore
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      // @ts-ignore
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     <Marker position={[latitude, longitude]}>
