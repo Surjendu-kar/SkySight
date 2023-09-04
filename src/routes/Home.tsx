@@ -93,7 +93,7 @@ function Home() {
   const [allTemp, setAllTemp] = React.useState<number[]>([]);
   const [allTime, setAllTime] = React.useState<number[]>([]);
   const [humidity, setHumidity] = React.useState<string | null>(null);
-  const [allHumidity, setAllHumidity] = React.useState<string | null>(null);
+  const [allHumidity, setAllHumidity] = React.useState<number[] | null>(null);
   const [windSpeed, setWindSpeed] = React.useState<string | null>(null);
   const [forecastDays, setForecastDays] = React.useState<number>(3);
 
