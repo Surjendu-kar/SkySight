@@ -9,10 +9,79 @@ import {
   Typography,
   Grid,
   Button,
+  styled,
 } from "@mui/material";
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+const Layout = styled(Box)(() => ({
+  display: "flex",
+  alignItems: "stretch",
+  minHeight: "100vh",
+  backgroundColor: "#1e1f24",
+}));
+
+const Navbar = styled(Box)(() => ({
+  background: "brown",
+  display: "flex",
+  justifyContent: "space-between",
+  minHeight: "5vh",
+  backgroundColor: "#1e1f24",
+  color: "white",
+}));
+
+const MainContainer = styled(Box)(() => ({
+  flex: "1",
+}));
+
+const CardContainer = styled(Card)(() => ({
+  minWidth: "50px",
+  height: "100px",
+  padding: "7px",
+  margin: "5px",
+  borderRadius: "25px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#c2e9eb",
+}));
+
+const TemperatureBox = styled(Box)(() => ({
+  width: "100%",
+  display: "flex",
+  flexDirection: "row",
+  overflowX: "auto",
+  minWidth: "100%",
+}));
+
+const TemperatureContext = styled(Typography)(() => ({
+  width: "fit-content",
+  fontSize: "3rem",
+}));
+
+const Subtitle = styled(Typography)(() => ({
+  fontSize: "1rem",
+  width: "fit-content",
+}));
+
+const Map = styled(Box)(() => ({
+  flex: 1,
+  margin: "10px",
+  padding: "10px",
+  backgroundColor: "transparent",
+  color: "white",
+}));
 
 function Home() {
   const [userVal, setUserVal] = React.useState("");
@@ -24,6 +93,7 @@ function Home() {
   const [allTemp, setAllTemp] = React.useState<number[]>([]);
   const [allTime, setAllTime] = React.useState<number[]>([]);
   const [humidity, setHumidity] = React.useState<string | null>(null);
+  const [allHumidity, setAllHumidity] = React.useState<string | null>(null);
   const [windSpeed, setWindSpeed] = React.useState<string | null>(null);
   const [forecastDays, setForecastDays] = React.useState<number>(3);
 
@@ -44,6 +114,7 @@ function Home() {
           })
         );
         setHumidity(data.hourly.relativehumidity_2m[new Date().getHours()]);
+        setAllHumidity(data.hourly.relativehumidity_2m);
         setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
       }
     } catch (error) {
@@ -69,6 +140,10 @@ function Home() {
     }
   };
 
+  // React.useEffect(() => {
+  //   console.log("allHumidity", allHumidity);
+  // }, [allHumidity]);
+
   const dt = new Date();
   const formattedDate = `${dt.toLocaleDateString("en-US", {
     weekday: "short",
@@ -92,40 +167,24 @@ function Home() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "stretch",
-        height: "100dvh",
-        backgroundColor: "#1e1f24",
-      }}
-    >
+    <Layout>
       {/* sidebar */}
       <Sidebar />
       {/* main */}
-      <div style={{ flex: 1 }}>
-        {/* header */}
-        <div
-          style={{
-            background: "brown",
-            display: "flex",
-            justifyContent: "space-between",
-            minHeight: "5vh",
-            backgroundColor: "#1e1f24",
-            color: "white",
-          }}
-        >
-          <div style={{ display: "flex", paddingTop: "7px" }}>
+      <MainContainer>
+        {/* navbar */}
+        <Navbar>
+          <Box sx={{ display: "flex", paddingTop: "1rem" }}>
             <Avatar
               alt="Remy Sharp"
-              src="/static/images/avatar/1.jpg"
+              // src="/static/images/avatar/1.jpg"
               sx={{ width: 24, height: 24, marginRight: "5px" }}
             />
-            {formattedDate}
-          </div>
+            <Typography fontSize={"1.25rem"}>{formattedDate}</Typography>
+          </Box>
 
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <div>
+          <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
+            <Box>
               <form
                 onSubmit={(e) => {
                   fetchCityApi(e);
@@ -147,9 +206,9 @@ function Home() {
                   disableUnderline
                 />
               </form>
-            </div>
-            <div>lan</div>
-            <div>
+            </Box>
+            <Box>lan</Box>
+            <Box>
               <Button
                 variant="contained"
                 size="small"
@@ -168,17 +227,18 @@ function Home() {
               >
                 F°
               </Button>
-            </div>
-          </div>
-        </div>
+            </Box>
+          </Box>
+        </Navbar>
 
         {/* contents */}
         {temp && (
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {/* part-1 */}
-            <div style={{ display: "flex", minHeight: "35vh" }}>
-              <div
-                style={{
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {/* row-1 */}
+            <Box sx={{ display: "flex", minHeight: "35vh" }}>
+              {/* Box 1 */}
+              <Box
+                sx={{
                   flex: 2,
                   border: "1px solid #000",
                   margin: "10px",
@@ -186,158 +246,87 @@ function Home() {
                   borderRadius: "20px",
                   backgroundColor: "#2e2e39",
                   color: "white",
+                  width: "50%",
                 }}
               >
-                <Grid container spacing={2}>
-                  <Grid item xs={3} sx={{ textAlign: "center" }}>
-                    <img
-                      src="./fog.png"
-                      alt=""
-                      style={{ width: "5rem", height: "4.5rem" }}
-                    />
-                  </Grid>
+                <Box height={"50%"}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={3} sx={{ textAlign: "center" }}>
+                      <img
+                        src="./fog.png"
+                        alt=""
+                        style={{ width: "7rem", height: "7rem" }}
+                      />
+                    </Grid>
 
-                  <Grid item xs={3}>
-                    <Typography
-                      variant="h5"
-                      sx={{ width: "fit-content", fontSize: "2rem" }}
-                    >
-                      {city ? city : "City not found"}
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: "0.8rem", width: "fit-content" }}
-                    >
-                      {state ? state : "State not found"}
-                    </Typography>
-                  </Grid>
+                    <Grid item xs={3}>
+                      <TemperatureContext variant="h5">
+                        {city ? city : "City not found"}
+                      </TemperatureContext>
+                      <Subtitle>{state ? state : "State not found"}</Subtitle>
+                    </Grid>
 
-                  <Grid item xs={2}>
-                    <Typography
-                      sx={{
-                        fontSize: "2rem",
-                        width: "fit-content",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      +{temp ? temp : "Temp not found"}
-                      <Typography component="span" sx={{ fontSize: "2rem" }}>
-                        °
-                      </Typography>
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: "0.8rem", width: "fit-content" }}
-                    >
-                      Temperature
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={2}>
-                    <Typography
-                      sx={{
-                        fontSize: "2rem",
-                        width: "fit-content",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {humidity && humidity}
-                      <Typography component="span" sx={{ fontSize: "1rem" }}>
-                        %
-                      </Typography>
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: "0.8rem", width: "fit-content" }}
-                    >
-                      Humidity
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={2}>
-                    <Typography
-                      sx={{
-                        fontSize: "2rem",
-                        width: "fit-content",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {windSpeed && windSpeed}
-                      <Typography component="span" sx={{ fontSize: "1rem" }}>
-                        km/h
-                      </Typography>{" "}
-                    </Typography>
-                    <Typography
-                      sx={{ fontSize: "0.8rem", width: "fit-content" }}
-                    >
-                      Wind Speed
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <div
-                  style={{
-                    flex: 2,
-                    // border: "1px solid #000",
-                    margin: 0,
-                    borderRadius: "20px",
-                    maxWidth: "800px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      flexWrap: "nowrap",
-                      overflowX: "auto",
-                    }}
-                  >
-                    {allTemp.slice(0, 24).map((each, index) => {
-                      return (
-                        <Card
-                          variant="outlined"
-                          sx={{
-                            minWidth: "40px",
-                            height: "70px",
-                            padding: "5px",
-                            margin: "5px",
-                            borderRadius: 5,
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: "#c2e9eb",
-                          }}
-                          key={index}
+                    <Grid item xs={2}>
+                      <TemperatureContext display={"flex"}>
+                        +{temp ? temp : "Temp not found"}
+                        <Typography
+                          component="span"
+                          sx={{ fontSize: "2.5rem" }}
                         >
-                          <Typography sx={{ fontSize: "12px" }}>
-                            {allTime[index] < 12
-                              ? `${allTime[index]} am`
-                              : `${allTime[index]} pm`}
-                          </Typography>
-                          <Typography variant="h6" sx={{ fontSize: "15px" }}>
-                            {each}
-                          </Typography>
-                        </Card>
-                      );
-                    })}
-                  </Box>
-                </div>
-              </div>
+                          °
+                        </Typography>
+                      </TemperatureContext>
+                      <Subtitle>Temperature</Subtitle>
+                    </Grid>
 
-              <div
-                style={{
-                  flex: 1,
-                  // border: "1px solid #000",
-                  margin: "10px",
-                  padding: "10px",
-                  // borderRadius: "20px",
-                  backgroundColor: "transparent",
-                  color: "white",
-                }}
-              >
+                    <Grid item xs={2}>
+                      <TemperatureContext>
+                        {humidity && humidity}
+                        <Typography
+                          component="span"
+                          sx={{ fontSize: "1.5rem" }}
+                        >
+                          %
+                        </Typography>
+                      </TemperatureContext>
+                      <Subtitle>Humidity</Subtitle>
+                    </Grid>
+
+                    <Grid item xs={2}>
+                      <TemperatureContext>
+                        {windSpeed && windSpeed}
+                        <Typography
+                          component="span"
+                          sx={{ fontSize: "1.5rem" }}
+                        >
+                          km/h
+                        </Typography>{" "}
+                      </TemperatureContext>
+                      <Subtitle>Wind Speed</Subtitle>
+                    </Grid>
+                  </Grid>
+                </Box>
+
+                <TemperatureBox>
+                  {allTemp.slice(0, 24).map((each, index) => {
+                    return (
+                      <CardContainer variant="outlined" key={index}>
+                        <Typography sx={{ fontSize: "12px" }}>
+                          {allTime[index] < 12
+                            ? `${allTime[index]} am`
+                            : `${allTime[index]} pm`}
+                        </Typography>
+                        <Typography variant="h6" sx={{ fontSize: "15px" }}>
+                          {each}
+                        </Typography>
+                      </CardContainer>
+                    );
+                  })}
+                </TemperatureBox>
+              </Box>
+
+              {/* Box 2 */}
+              <Map>
                 {latitude && longitude && (
                   <MapContainer
                     key={`${latitude}-${longitude}`} // <-- Add this line
@@ -363,13 +352,14 @@ function Home() {
                     </Marker>
                   </MapContainer>
                 )}
-              </div>
-            </div>
+              </Map>
+            </Box>
 
-            {/* part-2 */}
-            <div style={{ display: "flex", minHeight: "40vh" }}>
-              <div
-                style={{
+            {/* row-2 */}
+            <Box sx={{ display: "flex", minHeight: "40vh" }}>
+              {/* Box 3 */}
+              <Box
+                sx={{
                   flex: 2,
                   border: "1px solid #000",
                   margin: "10px",
@@ -377,13 +367,53 @@ function Home() {
                   borderRadius: "20px",
                   backgroundColor: "#2e2e39",
                   color: "white",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                left
-              </div>
+                {allHumidity && (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart
+                      data={allHumidity.map(
+                        (humidity: number, index: number) => ({
+                          humidity,
+                          time: allTime[index],
+                        })
+                      )}
+                      margin={{
+                        top: 20,
+                        right: 30,
+                        left: 0,
+                        bottom: 0,
+                      }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
+                      <XAxis dataKey="time" stroke="white" />
+                      <YAxis stroke="white" />
+                      <Tooltip
+                        wrapperStyle={{
+                          backgroundColor: "#f0f0f0",
+                          color: "white",
+                        }}
+                        contentStyle={{ color: "white" }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="humidity"
+                        stroke="#c2e9eb"
+                        dot={false} // This line removes the dots
+                        activeDot={{ r: 8 }}
+                        strokeWidth={3}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </Box>
 
-              <div
-                style={{
+              {/* Box 4 */}
+              <Box
+                sx={{
                   flex: 1,
                   border: "1px solid #000",
                   margin: "10px",
@@ -442,11 +472,10 @@ function Home() {
                   <Box
                     sx={{
                       width: "100%",
-                      height: "170px",
                       display: "flex",
                       flexDirection: "column",
-                      flexWrap: "nowrap",
-                      overflowY: "auto", // This allows for vertical scrolling
+                      overflowY: "auto",
+                      maxHeight: "18rem",
                     }}
                   >
                     {Array.from({ length: forecastDays }).map((_, dayIndex) => {
@@ -465,18 +494,15 @@ function Home() {
                         <Box
                           sx={{
                             display: "flex",
-                            justifyContent: "flex-end",
                             border: "1px solid #000",
                             borderRadius: 5,
-                            minWidth: "100px",
-                            height: "100px",
-                            padding: "5px",
-                            margin: "10px",
+                            padding: "1.25rem",
+                            margin: "0.5rem",
                             backgroundColor: "#1e1f24",
                           }}
                           key={dayIndex}
                         >
-                          <Typography sx={{ fontSize: "100%" }}>
+                          <Typography sx={{ fontSize: "1.5rem" }}>
                             +{maxTemp}°
                           </Typography>
                           <Box
@@ -487,10 +513,10 @@ function Home() {
                               flexGrow: 1,
                             }}
                           >
-                            <Typography sx={{ fontSize: "60%" }}>
+                            <Typography sx={{ fontSize: "1rem" }}>
                               / {minTemp}°
                             </Typography>
-                            <Typography sx={{ fontSize: "16px" }}>
+                            <Typography sx={{ fontSize: "1.5rem" }}>
                               {incrementedDate}
                             </Typography>
                           </Box>
@@ -499,13 +525,14 @@ function Home() {
                     })}
                   </Box>
                 )}
-              </div>
-            </div>
+              </Box>
+            </Box>
 
-            {/* part-3 */}
-            <div style={{ display: "flex", minHeight: "20vh" }}>
-              <div
-                style={{
+            {/* row-3 */}
+            <Box sx={{ display: "flex", minHeight: "20vh" }}>
+              {/* Box 5 */}
+              <Box
+                sx={{
                   flex: 2,
                   border: "1px solid #000",
                   margin: "10px",
@@ -516,9 +543,9 @@ function Home() {
                 }}
               >
                 left
-              </div>
-              <div
-                style={{
+              </Box>
+              <Box
+                sx={{
                   flex: 1,
                   border: "1px solid #000",
                   margin: "10px",
@@ -529,12 +556,12 @@ function Home() {
                 }}
               >
                 right
-              </div>
-            </div>
-          </div>
+              </Box>
+            </Box>
+          </Box>
         )}
-      </div>
-    </div>
+      </MainContainer>
+    </Layout>
   );
 }
 

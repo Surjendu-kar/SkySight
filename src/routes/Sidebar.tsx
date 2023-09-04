@@ -1,16 +1,19 @@
+import { Box } from "@mui/material";
+import { styled } from "@mui/system";
 import { Link } from "react-router-dom";
+
+const Container = styled(Box)(() => ({
+  background: "#2e2e39",
+  padding: "1rem",
+  borderRadius: "25px",
+  margin: "15px",
+  border: "1px solid #000",
+  fontSize: "1.5rem",
+}));
 
 function Sidebar() {
   return (
-    <div
-      style={{
-        background: "#2e2e39",
-        padding: "10px",
-        borderRadius: "25px",
-        margin: "15px",
-        border: "1px solid #000",
-      }}
-    >
+    <Container>
       <p className="cursor-pointer">
         <Link to="/" style={{ textDecoration: "none", color: "white" }}>
           Home
@@ -21,7 +24,7 @@ function Sidebar() {
           Details
         </Link>
       </p>
-    </div>
+    </Container>
   );
 }
 
