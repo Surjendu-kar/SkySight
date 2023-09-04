@@ -15,6 +15,7 @@ import {
 import coldImage from "../images/snow.png";
 import hotImage from "../images/sunny.png";
 import mildImage from "../images/rainy-day.png";
+import mainImage from "../images/fog.png";
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -163,7 +164,6 @@ function Home() {
   })}, ${dt.getDate()} ${dt.toLocaleDateString("en-US", {
     month: "short",
   })}, ${dt.getFullYear()}`;
-  // Output: "Wed, 9 Aug, 2023"
 
   React.useEffect(() => {
     if (latitude !== null && longitude !== null) {
@@ -190,7 +190,6 @@ function Home() {
           <Box sx={{ display: "flex", paddingTop: "0.75rem" }}>
             <Avatar
               alt="Remy Sharp"
-              // src="/static/images/avatar/1.jpg"
               sx={{ width: 24, height: 24, marginRight: "5px" }}
             />
             <Typography fontSize={"1rem"}>{formattedDate}</Typography>
@@ -265,7 +264,7 @@ function Home() {
                   <Grid container spacing={2}>
                     <Grid item xs={3} sx={{ textAlign: "center" }}>
                       <img
-                        src="./fog.png"
+                        src={mainImage}
                         alt=""
                         style={{ width: "5rem", height: "5rem" }}
                       />
