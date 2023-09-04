@@ -12,6 +12,10 @@ import {
   styled,
 } from "@mui/material";
 
+import coldImage from "../images/snow.png";
+import hotImage from "../images/sunny.png";
+import mildImage from "../images/rainy-day.png";
+
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {
@@ -38,10 +42,12 @@ const Navbar = styled(Box)(() => ({
   minHeight: "5vh",
   backgroundColor: "#1e1f24",
   color: "white",
+  padding: "0 10px",
 }));
 
 const MainContainer = styled(Box)(() => ({
   flex: "1",
+  overflow: "hidden",
 }));
 
 const CardContainer = styled(Card)(() => ({
@@ -63,15 +69,16 @@ const TemperatureBox = styled(Box)(() => ({
   flexDirection: "row",
   overflowX: "auto",
   minWidth: "100%",
+  borderRadius: "20px",
 }));
 
 const TemperatureContext = styled(Typography)(() => ({
   width: "fit-content",
-  fontSize: "3rem",
+  fontSize: "2rem",
 }));
 
 const Subtitle = styled(Typography)(() => ({
-  fontSize: "1rem",
+  fontSize: "0.75rem",
   width: "fit-content",
 }));
 
@@ -140,9 +147,15 @@ function Home() {
     }
   };
 
-  // React.useEffect(() => {
-  //   console.log("allHumidity", allHumidity);
-  // }, [allHumidity]);
+  const getWeatherImage = (temperature: number) => {
+    if (temperature < 10) {
+      return coldImage;
+    } else if (temperature >= 10 && temperature <= 25) {
+      return mildImage;
+    } else {
+      return hotImage;
+    }
+  };
 
   const dt = new Date();
   const formattedDate = `${dt.toLocaleDateString("en-US", {
@@ -174,13 +187,13 @@ function Home() {
       <MainContainer>
         {/* navbar */}
         <Navbar>
-          <Box sx={{ display: "flex", paddingTop: "1rem" }}>
+          <Box sx={{ display: "flex", paddingTop: "0.75rem" }}>
             <Avatar
               alt="Remy Sharp"
               // src="/static/images/avatar/1.jpg"
               sx={{ width: 24, height: 24, marginRight: "5px" }}
             />
-            <Typography fontSize={"1.25rem"}>{formattedDate}</Typography>
+            <Typography fontSize={"1rem"}>{formattedDate}</Typography>
           </Box>
 
           <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
@@ -235,12 +248,11 @@ function Home() {
         {temp && (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             {/* row-1 */}
-            <Box sx={{ display: "flex", minHeight: "35vh" }}>
+            <Box sx={{ display: "flex", minHeight: "25vh" }}>
               {/* Box 1 */}
               <Box
                 sx={{
                   flex: 2,
-                  border: "1px solid #000",
                   margin: "10px",
                   padding: "10px",
                   borderRadius: "20px",
@@ -255,7 +267,7 @@ function Home() {
                       <img
                         src="./fog.png"
                         alt=""
-                        style={{ width: "7rem", height: "7rem" }}
+                        style={{ width: "5rem", height: "5rem" }}
                       />
                     </Grid>
 
@@ -269,10 +281,7 @@ function Home() {
                     <Grid item xs={2}>
                       <TemperatureContext display={"flex"}>
                         +{temp ? temp : "Temp not found"}
-                        <Typography
-                          component="span"
-                          sx={{ fontSize: "2.5rem" }}
-                        >
+                        <Typography component="span" sx={{ fontSize: "2rem" }}>
                           °
                         </Typography>
                       </TemperatureContext>
@@ -282,10 +291,7 @@ function Home() {
                     <Grid item xs={2}>
                       <TemperatureContext>
                         {humidity && humidity}
-                        <Typography
-                          component="span"
-                          sx={{ fontSize: "1.5rem" }}
-                        >
+                        <Typography component="span" sx={{ fontSize: "1rem" }}>
                           %
                         </Typography>
                       </TemperatureContext>
@@ -295,10 +301,7 @@ function Home() {
                     <Grid item xs={2}>
                       <TemperatureContext>
                         {windSpeed && windSpeed}
-                        <Typography
-                          component="span"
-                          sx={{ fontSize: "1.5rem" }}
-                        >
+                        <Typography component="span" sx={{ fontSize: "1rem" }}>
                           km/h
                         </Typography>{" "}
                       </TemperatureContext>
@@ -316,6 +319,11 @@ function Home() {
                             ? `${allTime[index]} am`
                             : `${allTime[index]} pm`}
                         </Typography>
+                        <img
+                          src={getWeatherImage(each)}
+                          alt="Weather Icon"
+                          style={{ width: "2rem", height: "2rem" }}
+                        />
                         <Typography variant="h6" sx={{ fontSize: "15px" }}>
                           {each}
                         </Typography>
@@ -356,12 +364,11 @@ function Home() {
             </Box>
 
             {/* row-2 */}
-            <Box sx={{ display: "flex", minHeight: "40vh" }}>
+            <Box sx={{ display: "flex", maxHeight: "38vh" }}>
               {/* Box 3 */}
               <Box
                 sx={{
                   flex: 2,
-                  border: "1px solid #000",
                   margin: "10px",
                   padding: "10px",
                   borderRadius: "20px",
@@ -370,10 +377,11 @@ function Home() {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  width: "50%",
                 }}
               >
                 {allHumidity && (
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={250}>
                     <LineChart
                       data={allHumidity.map(
                         (humidity: number, index: number) => ({
@@ -415,7 +423,6 @@ function Home() {
               <Box
                 sx={{
                   flex: 1,
-                  border: "1px solid #000",
                   margin: "10px",
                   padding: "10px",
                   borderRadius: "20px",
@@ -428,7 +435,6 @@ function Home() {
                   <div
                     className="btn"
                     style={{
-                      border: "1px solid #000",
                       borderRadius: "20px",
                       backgroundColor: "black",
                     }}
@@ -475,7 +481,7 @@ function Home() {
                       display: "flex",
                       flexDirection: "column",
                       overflowY: "auto",
-                      maxHeight: "18rem",
+                      maxHeight: "12rem",
                     }}
                   >
                     {Array.from({ length: forecastDays }).map((_, dayIndex) => {
@@ -494,10 +500,9 @@ function Home() {
                         <Box
                           sx={{
                             display: "flex",
-                            border: "1px solid #000",
                             borderRadius: 5,
-                            padding: "1.25rem",
-                            margin: "0.5rem",
+                            padding: "0.5rem",
+                            margin: "0.25rem",
                             backgroundColor: "#1e1f24",
                           }}
                           key={dayIndex}
@@ -516,10 +521,10 @@ function Home() {
                             <Typography sx={{ fontSize: "1rem" }}>
                               / {minTemp}°
                             </Typography>
-                            <Typography sx={{ fontSize: "1.5rem" }}>
-                              {incrementedDate}
-                            </Typography>
                           </Box>
+                          <Typography sx={{ fontSize: "1rem" }}>
+                            Date - {incrementedDate}
+                          </Typography>
                         </Box>
                       );
                     })}
@@ -529,12 +534,11 @@ function Home() {
             </Box>
 
             {/* row-3 */}
-            <Box sx={{ display: "flex", minHeight: "20vh" }}>
+            <Box sx={{ display: "flex", minHeight: "18vh" }}>
               {/* Box 5 */}
               <Box
                 sx={{
                   flex: 2,
-                  border: "1px solid #000",
                   margin: "10px",
                   padding: "10px",
                   borderRadius: "20px",
@@ -547,7 +551,6 @@ function Home() {
               <Box
                 sx={{
                   flex: 1,
-                  border: "1px solid #000",
                   margin: "10px",
                   padding: "10px",
                   borderRadius: "20px",

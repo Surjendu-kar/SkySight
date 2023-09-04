@@ -8,7 +8,7 @@ const Container = styled(Box)(() => ({
   borderRadius: "25px",
   margin: "15px",
   border: "1px solid #000",
-  fontSize: "1.5rem",
+  fontSize: "1rem",
 }));
 
 function Sidebar() {
