@@ -32,7 +32,7 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
   letterSpacing: "0.15rem",
 
   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.4)",
-
+  transition: "all 0.3s ease",
   "&:hover": {
     color: "#fff",
     backgroundColor: "transparent",
@@ -41,6 +41,7 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
     boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.6)",
     border: "1px solid #000",
     width: "21rem",
+    transform: "rotate(2deg)",
   },
   "&:active": {
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
