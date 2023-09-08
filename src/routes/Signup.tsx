@@ -43,7 +43,6 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
   const { signup, isPending, error } = useSignup();
   const navigate = useNavigate();
 
@@ -86,10 +85,6 @@ function SignUp() {
         {isPending && <CustomeBtn>Loading..</CustomeBtn>}
         {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
       </>
-
-      {emailSent && (
-        <p>Please check your email to verify your account before logging in.</p>
-      )}
     </Form>
   );
 }

@@ -54,7 +54,16 @@ function SignUpRoute() {
   return <RouteWrapper Component={SignUp} />;
 }
 
-function RouteWrapper({ Component }) {
+interface RouteComponentProps {
+  location: ReturnType<typeof useLocation>;
+  navigate: ReturnType<typeof useNavigate>;
+}
+
+function RouteWrapper({
+  Component,
+}: {
+  Component: React.ComponentType<RouteComponentProps>;
+}) {
   const location = useLocation();
   const navigate = useNavigate();
 
