@@ -29,7 +29,7 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
   backgroundColor: "transparent",
   color: "#fff",
   fontFamily: "Garamond",
-  letterSpacing: "0.25rem",
+  letterSpacing: "0.15rem",
 
   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.4)",
 
