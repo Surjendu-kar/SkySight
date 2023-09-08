@@ -54,7 +54,7 @@ function SignUpRoute() {
   return <RouteWrapper Component={SignUp} />;
 }
 
-function RouteWrapper({ Component }: any) {
+function RouteWrapper({ Component }) {
   const location = useLocation();
   const navigate = useNavigate();
 
