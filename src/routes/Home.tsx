@@ -28,6 +28,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -104,6 +105,8 @@ function Home() {
   const [allHumidity, setAllHumidity] = React.useState<number[] | null>(null);
   const [windSpeed, setWindSpeed] = React.useState<string | null>(null);
   const [forecastDays, setForecastDays] = React.useState<number>(3);
+
+  const { user } = useAuthContext();
 
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
@@ -189,6 +192,7 @@ function Home() {
         {/* navbar */}
         <Navbar>
           <Box sx={{ display: "flex", paddingTop: "0.75rem" }}>
+            {/* {user && user.displayName} */}
             <Avatar
               alt="Remy Sharp"
               sx={{ width: 24, height: 24, marginRight: "5px" }}

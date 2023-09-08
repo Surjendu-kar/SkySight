@@ -41,7 +41,6 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
     boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.6)",
     border: "1px solid #000",
     width: "21rem",
-    transform: "rotate(2deg)",
   },
   "&:active": {
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
@@ -65,16 +64,31 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
     borderRadius: "5px",
   },
 }));
+const TitleStyle = styled(Box)(({ theme }) => ({
+  fontSize: "3.5rem",
+  margin: "2rem 0",
+  transition: "all 0.3s ease",
+
+  [theme.breakpoints.down("md")]: {
+    fontSize: "2rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1.5rem",
+  },
+  "&:hover": {
+    transform: "rotate(5deg)",
+  },
+}));
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <Box>
-      <ContainerStyle>
-        <ButtonStyle onClick={() => navigate("/login")}>Login</ButtonStyle>
-        <ButtonStyle onClick={() => navigate("/signup")}>Signup</ButtonStyle>
-      </ContainerStyle>
-    </Box>
+    <ContainerStyle>
+      <TitleStyle>SkySight</TitleStyle>
+
+      <ButtonStyle onClick={() => navigate("/login")}>Login</ButtonStyle>
+      <ButtonStyle onClick={() => navigate("/signup")}>Signup</ButtonStyle>
+    </ContainerStyle>
   );
 }
