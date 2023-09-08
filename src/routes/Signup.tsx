@@ -46,8 +46,8 @@ function SignUp() {
   const [emailSent, setEmailSent] = useState(false);
   const { signup, isPending, error } = useSignup();
   const navigate = useNavigate();
-  
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await signup(email, password, displayName);
     navigate("/login"); // Navigate to login page after signup
@@ -56,37 +56,37 @@ function SignUp() {
   return (
     <Form onSubmit={handleSubmit}>
       <h2>SignUp</h2>
-      {!emailSent && (
-        <>
-          <Label>
-            <span>email:</span>
-            <input
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-          </Label>
-          <Label>
-            <span>password:</span>
-            <input
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </Label>
-          <Label>
-            <span>display name:</span>
-            <input
-              type="text"
-              onChange={(e) => setDisplayName(e.target.value)}
-              value={displayName}
-            />
-          </Label>
-          {!isPending && <CustomeBtn>Signup</CustomeBtn>}
-          {isPending && <CustomeBtn>Loading..</CustomeBtn>}
-          {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
-        </>
-      )}
+
+      <>
+        <Label>
+          <span>email:</span>
+          <input
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+          />
+        </Label>
+        <Label>
+          <span>password:</span>
+          <input
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+        </Label>
+        <Label>
+          <span>display name:</span>
+          <input
+            type="text"
+            onChange={(e) => setDisplayName(e.target.value)}
+            value={displayName}
+          />
+        </Label>
+        {!isPending && <CustomeBtn>Signup</CustomeBtn>}
+        {isPending && <CustomeBtn>Loading..</CustomeBtn>}
+        {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
+      </>
+
       {emailSent && (
         <p>Please check your email to verify your account before logging in.</p>
       )}

@@ -43,7 +43,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const { login, isPending, error } = useLogin();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     login(email, password);
   };

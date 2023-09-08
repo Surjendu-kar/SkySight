@@ -18,9 +18,13 @@ export const useLogout = () => {
       //dispatch logout action
       dispatch({ type: "LOGOUT" });
     } catch (error) {
-      //ADD cleanup fun
-      console.log(error.message);
-      setError(error.message);
+      if (error instanceof Error) {
+        console.log(error.message);
+        setError(error.message);
+      } else {
+        // Handle or log the error differently if it's not an instance of Error
+        setError("An unexpected error occurred.");
+      }
     } finally {
       // This block will always execute after the try or catch block
       // if (!isCancelled) {

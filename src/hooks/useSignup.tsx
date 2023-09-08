@@ -2,10 +2,14 @@ import { useState } from "react";
 import { projectAuth } from "../firebase/config";
 
 export const useSignup = () => {
-  const [error, setError] = useState(null);
-  const [isPending, setIsPending] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null); // Explicitly type the error state
+  const [isPending, setIsPending] = useState<boolean>(false); // Set initial value to false
 
-  const signup = async (email, password, displayName) => {
+  const signup = async (
+    email: string,
+    password: string,
+    displayName: string
+  ) => {
     setError(null);
     setIsPending(true);
 
@@ -25,8 +29,13 @@ export const useSignup = () => {
       // Send email verification
       await res.user?.sendEmailVerification();
     } catch (error) {
-      console.log(error.message);
-      setError(error.message);
+      if (error instanceof Error) {
+        console.log(error.message);
+        setError(error.message);
+      } else {
+        // Handle or log the error differently if it's not an instance of Error
+        setError("An unexpected error occurred.");
+      }
     } finally {
       setIsPending(false);
     }
