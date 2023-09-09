@@ -64,7 +64,7 @@
       );
     }, []);
 
-    console.log("authContext state:", state);
+    // console.log("authContext state:", state);
 
     return (
       <AuthContext.Provider value={{ ...state, dispatch }}>

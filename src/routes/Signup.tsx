@@ -39,6 +39,19 @@ const CustomeBtn = styled("button")(() => ({
   },
 }));
 
+const RightAlignedDiv = styled("div")(() => ({
+  textAlign: "right",
+  marginBottom: "1rem",
+}));
+
+const StyledNavigationButton = styled("button")(() => ({
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  color: "#7091F5",
+  padding: "5px",
+}));
+
 function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,35 +69,42 @@ function SignUp() {
     <Form onSubmit={handleSubmit}>
       <h2>SignUp</h2>
 
-      <>
-        <Label>
-          <span>email:</span>
-          <input
-            type="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-        </Label>
-        <Label>
-          <span>password:</span>
-          <input
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-        </Label>
-        <Label>
-          <span>display name:</span>
-          <input
-            type="text"
-            onChange={(e) => setDisplayName(e.target.value)}
-            value={displayName}
-          />
-        </Label>
-        {!isPending && <CustomeBtn>Signup</CustomeBtn>}
-        {isPending && <CustomeBtn>Loading..</CustomeBtn>}
-        {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
-      </>
+      <Label>
+        <span>Email:</span>
+        <input
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ width: "95%" }}
+          value={email}
+        />
+      </Label>
+      <Label>
+        <span>Password:</span>
+        <input
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ width: "95%" }}
+          value={password}
+        />
+      </Label>
+      <Label sx={{ marginBottom: 0 }}>
+        <span>Display name:</span>
+        <input
+          type="text"
+          onChange={(e) => setDisplayName(e.target.value)}
+          style={{ width: "95%" }}
+          value={displayName}
+        />
+      </Label>
+      <RightAlignedDiv>
+        <StyledNavigationButton onClick={() => navigate("/login")}>
+          Already have an account? Sign in
+        </StyledNavigationButton>
+      </RightAlignedDiv>
+
+      {!isPending && <CustomeBtn>Signup</CustomeBtn>}
+      {isPending && <CustomeBtn>Loading..</CustomeBtn>}
+      {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
     </Form>
   );
 }
