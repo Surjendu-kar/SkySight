@@ -37,18 +37,22 @@ const CustomeBtn = styled("button")(() => ({
     background: "#1f9751",
     color: "#fff",
   },
+
+  // add style if button is disabled
+  "&:disabled": {
+    background: "#ccc",
+    color: "#fff",
+    cursor: "not-allowed",
+  },
 }));
 
 const RightAlignedDiv = styled("div")(() => ({
   textAlign: "right",
 }));
 
-const StyledNavigationButton = styled("button")(() => ({
-  background: "none",
-  border: "none",
+const StyledNavigationButton = styled("p")(() => ({
   cursor: "pointer",
   color: "#7091F5",
-  padding: "5px",
 }));
 
 function Login() {
