@@ -109,7 +109,7 @@ function Home() {
   const [unit, setUnit] = React.useState<"C" | "F">("C");
 
   const toFahrenheit = (celsius: number): number => {
-    return (celsius * 9) / 5 + 32;
+    return Math.round(celsius * 9) / 5 + 32;
   };
 
   const key = import.meta.env.VITE_NASA_API_KEY;
