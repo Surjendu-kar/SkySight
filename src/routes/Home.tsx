@@ -106,6 +106,12 @@ function Home() {
   const [windSpeed, setWindSpeed] = React.useState<string | null>(null);
   const [forecastDays, setForecastDays] = React.useState<number>(3);
 
+  const [unit, setUnit] = React.useState<"C" | "F">("C");
+
+  const toFahrenheit = (celsius: number): number => {
+    return (celsius * 9) / 5 + 32;
+  };
+
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
   const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m`;
@@ -222,27 +228,34 @@ function Home() {
                 />
               </form>
             </Box>
-            <Box>lan</Box>
-            <Box>
-              <Button
-                variant="contained"
-                size="small"
-                style={{
-                  backgroundColor: "gray",
-                }}
-              >
-                C°
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                style={{
-                  backgroundColor: "gray",
-                }}
-              >
-                F°
-              </Button>
-            </Box>
+            {/* <Box>lan</Box> */}
+
+            {temp && (
+              <Box>
+                <Button
+                  variant="contained"
+                  size="small"
+                  style={{
+                    color: unit === "C" ? "black" : "#c2e9eb",
+                    backgroundColor: unit === "C" ? "#c2e9eb" : "black",
+                  }}
+                  onClick={() => setUnit("C")}
+                >
+                  C°
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  style={{
+                    color: unit === "F" ? "black" : "#c2e9eb",
+                    backgroundColor: unit === "F" ? "#c2e9eb" : "black",
+                  }}
+                  onClick={() => setUnit("F")}
+                >
+                  F°
+                </Button>
+              </Box>
+            )}
           </Box>
         </Navbar>
 
@@ -282,7 +295,7 @@ function Home() {
 
                     <Grid item xs={2}>
                       <TemperatureContext display={"flex"}>
-                        +{temp ? temp : "Temp not found"}
+                        +{unit === "C" ? temp : toFahrenheit(temp)}
                         <Typography component="span" sx={{ fontSize: "2rem" }}>
                           °
                         </Typography>
@@ -327,7 +340,7 @@ function Home() {
                           style={{ width: "2rem", height: "2rem" }}
                         />
                         <Typography variant="h6" sx={{ fontSize: "15px" }}>
-                          {each}
+                          {unit === "C" ? each : toFahrenheit(each)}
                         </Typography>
                       </CardContainer>
                     );

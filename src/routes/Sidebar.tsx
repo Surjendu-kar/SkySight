@@ -15,15 +15,15 @@ function Sidebar() {
   return (
     <Container>
       <p className="cursor-pointer">
-        <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+        <Link to="/home" style={{ textDecoration: "none", color: "white" }}>
           Home
         </Link>
       </p>
-      <p className="cursor-pointer">
+      {/* <p className="cursor-pointer">
         <Link to="/details" style={{ textDecoration: "none", color: "white" }}>
           Details
         </Link>
-      </p>
+      </p> */}
     </Container>
   );
 }
