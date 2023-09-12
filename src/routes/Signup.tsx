@@ -44,12 +44,9 @@ const RightAlignedDiv = styled("div")(() => ({
   marginBottom: "1rem",
 }));
 
-const StyledNavigationButton = styled("button")(() => ({
-  background: "none",
-  border: "none",
+const StyledNavigationButton = styled("p")(() => ({
   cursor: "pointer",
   color: "#7091F5",
-  padding: "5px",
 }));
 
 function SignUp() {
@@ -61,6 +58,12 @@ function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!email || !password || !displayName) {
+      alert('Please fill all the fields');
+      return;
+    }
+
     await signup(email, password, displayName);
     navigate("/login"); // Navigate to login page after signup
   };
@@ -102,8 +105,10 @@ function SignUp() {
         </StyledNavigationButton>
       </RightAlignedDiv>
 
-      {!isPending && <CustomeBtn type="submit">Signup</CustomeBtn>}
-      {isPending && <CustomeBtn >Loading..</CustomeBtn>}
+      <CustomeBtn disabled={isPending} type="submit">
+        {isPending ? "Loading..." : "Sign Up"}
+      </CustomeBtn>
+
       {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
     </Form>
   );

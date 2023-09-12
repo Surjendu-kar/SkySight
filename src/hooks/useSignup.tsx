@@ -25,7 +25,7 @@ export const useSignup = () => {
         email,
         password
       );
-      console.log(res.user);
+      console.log('res.user', res.user);
 
       if (!res.user) {
         throw new Error("Could not complete Signup");
