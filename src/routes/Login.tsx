@@ -89,7 +89,7 @@ function Login() {
       </Label>
 
       {!isPending ? (
-        <CustomeBtn>Login</CustomeBtn>
+        <CustomeBtn type="submit">Login</CustomeBtn>
       ) : (
         <CustomeBtn disabled>Loading...</CustomeBtn>
       )}

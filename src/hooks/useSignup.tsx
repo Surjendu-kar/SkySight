@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { projectAuth } from "../firebase/config";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+} from "firebase/auth";
 
 export const useSignup = () => {
-  const [error, setError] = useState<string | null>(null); // Explicitly type the error state
-  const [isPending, setIsPending] = useState<boolean>(false); // Set initial value to false
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   const signup = async (
     email: string,
@@ -15,19 +20,22 @@ export const useSignup = () => {
 
     try {
       // signup user
-      const res = await projectAuth.createUserWithEmailAndPassword(
+      const res = await createUserWithEmailAndPassword(
+        projectAuth,
         email,
         password
       );
-      if (!res) {
+      console.log(res.user);
+
+      if (!res.user) {
         throw new Error("Could not complete Signup");
       }
 
       // add display name to user
-      await res.user?.updateProfile({ displayName: displayName });
+      await updateProfile(res.user, { displayName: displayName });
 
       // Send email verification
-      await res.user?.sendEmailVerification();
+      await sendEmailVerification(res.user);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);

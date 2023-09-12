@@ -102,8 +102,8 @@ function SignUp() {
         </StyledNavigationButton>
       </RightAlignedDiv>
 
-      {!isPending && <CustomeBtn>Signup</CustomeBtn>}
-      {isPending && <CustomeBtn>Loading..</CustomeBtn>}
+      {!isPending && <CustomeBtn type="submit">Signup</CustomeBtn>}
+      {isPending && <CustomeBtn >Loading..</CustomeBtn>}
       {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
     </Form>
   );

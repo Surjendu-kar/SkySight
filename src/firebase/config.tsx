@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import "firebase/firestore";
-import "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_NASA_FIREBASE_KEY,
@@ -11,10 +11,12 @@ const firebaseConfig = {
   appId: "1:734256389890:web:78590838b5cf0210ccac1b",
 };
 // initialze to firebase
-initializeApp(firebaseConfig);
+ initializeApp(firebaseConfig);
 
 //initialize firestore
-const projectFirestore = firebase.firestore();
-const projectAuth = firebase.auth();
+const projectFirestore = getFirestore();
+
+//init firebase auth
+const projectAuth = getAuth();
 
 export { projectFirestore, projectAuth };
