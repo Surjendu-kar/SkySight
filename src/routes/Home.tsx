@@ -108,7 +108,7 @@ function Home() {
 
   const [unit, setUnit] = React.useState<"C" | "F">("C");
 
-  const toFahrenheit = (celsius: number): number => {
+  const toFahrenheit = (celsius: string): string => {
     return (celsius * 9) / 5 + 32;
   };
 
