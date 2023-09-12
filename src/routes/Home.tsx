@@ -108,7 +108,7 @@ function Home() {
 
   const [unit, setUnit] = React.useState<"C" | "F">("C");
 
-  const toFahrenheit = (celsius: string): string => {
+  const toFahrenheit = (celsius: number): number => {
     return (celsius * 9) / 5 + 32;
   };
 
@@ -295,7 +295,7 @@ function Home() {
 
                     <Grid item xs={2}>
                       <TemperatureContext display={"flex"}>
-                        +{unit === "C" ? temp : toFahrenheit(temp)}
+                        +{unit === "C" ? temp : toFahrenheit(Number(temp))}
                         <Typography component="span" sx={{ fontSize: "2rem" }}>
                           °
                         </Typography>
