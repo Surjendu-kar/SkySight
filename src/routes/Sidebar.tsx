@@ -7,7 +7,6 @@ const Container = styled(Box)(() => ({
   padding: "1rem",
   borderRadius: "25px",
   margin: "15px",
-  border: "1px solid #000",
   fontSize: "1rem",
 }));
 

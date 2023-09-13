@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "./Sidebar";
+import { projectFirestore } from "../firebase/config";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
 import {
   Avatar,
   Box,
@@ -65,6 +68,19 @@ const CardContainer = styled(Card)(() => ({
   backgroundColor: "#c2e9eb",
 }));
 
+const PrevDataContainer = styled(Card)(() => ({
+  minWidth: "7rem",
+  height: "4rem",
+  padding: "20px",
+  margin: "5px",
+  borderRadius: "20px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#c2e9eb",
+}));
+
 const TemperatureBox = styled(Box)(() => ({
   width: "100%",
   display: "flex",
@@ -92,6 +108,7 @@ const Map = styled(Box)(() => ({
   color: "white",
 }));
 
+type FirestoreDocument = Record<string, any>;
 function Home() {
   const [userVal, setUserVal] = React.useState("");
   const [latitude, setLatitude] = React.useState<number | null>(null);
@@ -105,6 +122,9 @@ function Home() {
   const [allHumidity, setAllHumidity] = React.useState<number[] | null>(null);
   const [windSpeed, setWindSpeed] = React.useState<string | null>(null);
   const [forecastDays, setForecastDays] = React.useState<number>(3);
+  const [prevData, setPrevData] = React.useState<FirestoreDocument[] | null>(
+    null
+  );
 
   const [unit, setUnit] = React.useState<"C" | "F">("C");
 
@@ -187,6 +207,50 @@ function Home() {
     setForecastDays(6);
   };
 
+  const fetchExistingValues = async () => {
+    // used to fetch firebase data
+    const ref = collection(projectFirestore, "searchval");
+    const querySnapshot = await getDocs(ref);
+    let existingValues = [];
+    querySnapshot.forEach((doc) => {
+      existingValues.push(doc.data().userval);
+    });
+    return existingValues;
+  };
+
+  const handleKeyPress = async (e) => {
+    if (e.key === "Enter") {
+      fetchCityApi(e);
+      const existingValues = await fetchExistingValues();
+
+      if (userVal && temp && !existingValues.includes(userVal)) {
+        // here we check that the data is already exist or not
+        const ref = collection(projectFirestore, "searchval");
+        await addDoc(ref, {
+          // add user search val to the firebase
+          userval: userVal,
+          city: city,
+          state: state,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    getDocs(collection(projectFirestore, "searchval"))
+      .then((snapshot) => {
+        const results: FirestoreDocument[] = [];
+        snapshot.docs.forEach((doc) => {
+          results.push(doc.data() as FirestoreDocument);
+        });
+        temp && setPrevData((prev) => (prev ? [...prev, ...results] : results));
+        console.log(prevData);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch data:", err);
+      });
+  }, [temp]);
+
   return (
     <Layout>
       {/* sidebar */}
@@ -206,38 +270,36 @@ function Home() {
 
           <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
             <Box>
-              <form
-                onSubmit={(e) => {
-                  fetchCityApi(e);
+              <Input
+                id="search"
+                type="text"
+                placeholder="🔍Search city"
+                sx={{
+                  background: "#EEEDED",
+                  textAlign: "right",
+                  borderRadius: 10,
                 }}
-              >
-                <Input
-                  id="search"
-                  type="text"
-                  placeholder="🔍Search city"
-                  sx={{
-                    background: "#EEEDED",
-                    textAlign: "right",
-                    borderRadius: 10,
-                  }}
-                  onChange={(e) => {
-                    setUserVal(e.target.value);
-                  }}
-                  value={userVal}
-                  disableUnderline
-                />
-              </form>
+                onChange={(e) => setUserVal(e.target.value)}
+                onKeyDown={handleKeyPress}
+                value={userVal}
+                disableUnderline
+                autoComplete="off"
+              />
             </Box>
             {/* <Box>lan</Box> */}
 
             {temp && (
-              <Box>
+              <Box sx={{ borderRadius: "20px", backgroundColor: "black" }}>
                 <Button
                   variant="contained"
                   size="small"
-                  style={{
+                  sx={{
                     color: unit === "C" ? "black" : "#c2e9eb",
                     backgroundColor: unit === "C" ? "#c2e9eb" : "black",
+                    borderRadius: "20px",
+                    "&:hover": {
+                      backgroundColor: "gray",
+                    },
                   }}
                   onClick={() => setUnit("C")}
                 >
@@ -246,9 +308,13 @@ function Home() {
                 <Button
                   variant="contained"
                   size="small"
-                  style={{
+                  sx={{
                     color: unit === "F" ? "black" : "#c2e9eb",
                     backgroundColor: unit === "F" ? "#c2e9eb" : "black",
+                    borderRadius: "20px",
+                    "&:hover": {
+                      backgroundColor: "gray",
+                    },
                   }}
                   onClick={() => setUnit("F")}
                 >
@@ -461,7 +527,6 @@ function Home() {
                         color: forecastDays === 3 ? "black" : "#c2e9eb",
                         backgroundColor:
                           forecastDays === 3 ? "#c2e9eb" : "black",
-                        border: "1px solid #000",
                         borderRadius: "20px",
                         "&:hover": {
                           backgroundColor: "gray",
@@ -554,14 +619,19 @@ function Home() {
               <Box
                 sx={{
                   flex: 2,
-                  margin: "10px",
-                  padding: "10px",
                   borderRadius: "20px",
                   backgroundColor: "#2e2e39",
                   color: "white",
+                  width: "50%",
                 }}
               >
-                left
+                <TemperatureBox>
+                  {prevData?.map((each, index) => (
+                    <PrevDataContainer key={index}>
+                      {each.userval}
+                    </PrevDataContainer>
+                  ))}
+                </TemperatureBox>
               </Box>
               <Box
                 sx={{
