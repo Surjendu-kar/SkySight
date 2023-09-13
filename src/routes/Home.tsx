@@ -78,7 +78,7 @@ const PrevDataContainer = styled(Card)(() => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  backgroundColor: "#c2e9eb",
+  backgroundColor: "#2e2e39",
 }));
 
 const TemperatureBox = styled(Box)(() => ({
@@ -231,6 +231,7 @@ function Home() {
           userval: userVal,
           city: city,
           state: state,
+          temp: temp,
         });
       }
     }
@@ -620,15 +621,22 @@ function Home() {
                 sx={{
                   flex: 2,
                   borderRadius: "20px",
-                  backgroundColor: "#2e2e39",
-                  color: "white",
+                  backgroundColor: "#1e1f24",
                   width: "50%",
                 }}
               >
                 <TemperatureBox>
                   {prevData?.map((each, index) => (
-                    <PrevDataContainer key={index}>
-                      {each.userval}
+                    <PrevDataContainer key={index} sx={{ color: "white" }}>
+                      <Typography>{each.userval}</Typography>
+                      <Typography fontSize={'1.25rem'}>{each.city}</Typography>
+                      <Typography fontSize={'0.65rem'}>{each.state}</Typography>
+                      <Box display={"flex"}>
+                        <Typography>{each.temp}</Typography>
+                        <Typography component="span" sx={{ fontSize: "1rem" }}>
+                          °
+                        </Typography>
+                      </Box>
                     </PrevDataContainer>
                   ))}
                 </TemperatureBox>
