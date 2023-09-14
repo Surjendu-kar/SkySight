@@ -303,227 +303,230 @@ function Home() {
         </Navbar>
 
         {/* contents */}
-
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          {/* row-1 */}
-          <Box sx={{ display: "flex", minHeight: "25vh" }}>
-            {/* Box 1 */}
-            <FirstCol>
-              <FirstBox
+        
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            {/* row-1 */}
+            <Box sx={{ display: "flex", minHeight: "25vh" }}>
+              {/* Box 1 */}
+              <FirstCol>
+                <FirstBox
+                  city={city}
+                  state={state}
+                  temp={temp}
+                  unit={unit}
+                  humidity={humidity}
+                  windSpeed={windSpeed}
+                  allTemp={allTemp}
+                  allTime={allTime}
+                />
+              </FirstCol>
+              {/* Box 2 */}
+              <SecondBox
+                latitude={latitude}
+                longitude={longitude}
                 city={city}
                 state={state}
-                temp={temp}
-                unit={unit}
-                humidity={humidity}
-                windSpeed={windSpeed}
-                allTemp={allTemp}
-                allTime={allTime}
               />
-            </FirstCol>
-            {/* Box 2 */}
-            <SecondBox
-              latitude={latitude}
-              longitude={longitude}
-              city={city}
-              state={state}
-            />
-          </Box>
+            </Box>
+            {/* row-2 */}
+            <Box sx={{ display: "flex", maxHeight: "38vh" }}>
+              {/* Box 3 */}
+              <FirstCol
+                sx={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: "10px",
+                  padding: "10px",
+                  borderRadius: "20px",
+                  backgroundColor: "#2e2e39",
+                  color: "white",
+                  width: "50%",
+                }}
+              >
+                {allHumidity && (
+                  <ThirdBox
+                    allHumidity={allHumidity}
+                    allTime={allTime}
+                    uvIndex={uvIndex}
+                    allWindSpeed={allWindSpeed}
+                  />
+                )}
+              </FirstCol>
 
-          {/* row-2 */}
-          <Box sx={{ display: "flex", maxHeight: "38vh" }}>
-            {/* Box 3 */}
-            <FirstCol
-              sx={{
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "10px",
-                padding: "10px",
-                borderRadius: "20px",
-                backgroundColor: "#2e2e39",
-                color: "white",
-                width: "50%",
-              }}
-            >
-              {allHumidity && (
-                <ThirdBox
-                  allHumidity={allHumidity}
-                  allTime={allTime}
-                  uvIndex={uvIndex}
-                  allWindSpeed={allWindSpeed}
-                />
-              )}
-            </FirstCol>
+              {/* Box 4 */}
+              <Box
+                sx={{
+                  flex: 1,
+                  margin: "10px",
+                  padding: "10px",
+                  borderRadius: "20px",
+                  backgroundColor: "#2e2e39",
+                  color: "white",
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <h1 style={{ margin: 0, padding: 0 }}>ForeCast</h1>
+                  <div className="btn">
+                    <Box
+                      sx={{
+                        borderRadius: "20px",
+                        backgroundColor: "black",
+                      }}
+                    >
+                      <Button
+                        className="btn"
+                        size="small"
+                        onClick={handleThreeDaysClick}
+                        sx={{
+                          color: forecastDays === 3 ? "black" : "#c2e9eb",
+                          backgroundColor:
+                            forecastDays === 3 ? "#c2e9eb" : "black",
+                          borderRadius: "20px",
+                          "&:hover": {
+                            backgroundColor: "gray",
+                          },
+                        }}
+                      >
+                        3 days
+                      </Button>
+                      <Button
+                        className="btn"
+                        size="small"
+                        onClick={handleSixDaysClick}
+                        sx={{
+                          color: forecastDays === 6 ? "black" : "#c2e9eb",
+                          backgroundColor:
+                            forecastDays === 6 ? "#c2e9eb" : "black",
+                          border: "1px solid #000",
+                          borderRadius: "20px",
+                          "&:hover": {
+                            backgroundColor: "gray",
+                          },
+                        }}
+                      >
+                        6 days
+                      </Button>
+                    </Box>
+                  </div>
+                </Box>
 
-            {/* Box 4 */}
-            <Box
-              sx={{
-                flex: 1,
-                margin: "10px",
-                padding: "10px",
-                borderRadius: "20px",
-                backgroundColor: "#2e2e39",
-                color: "white",
-              }}
-            >
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <h1 style={{ margin: 0, padding: 0 }}>ForeCast</h1>
-                <div className="btn">
+                {allTemp && (
                   <Box
                     sx={{
-                      borderRadius: "20px",
-                      backgroundColor: "black",
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      overflowY: "auto",
+                      maxHeight: "12rem",
                     }}
                   >
-                    <Button
-                      className="btn"
-                      size="small"
-                      onClick={handleThreeDaysClick}
-                      sx={{
-                        color: forecastDays === 3 ? "black" : "#c2e9eb",
-                        backgroundColor:
-                          forecastDays === 3 ? "#c2e9eb" : "black",
-                        borderRadius: "20px",
-                        "&:hover": {
-                          backgroundColor: "gray",
-                        },
-                      }}
-                    >
-                      3 days
-                    </Button>
-                    <Button
-                      className="btn"
-                      size="small"
-                      onClick={handleSixDaysClick}
-                      sx={{
-                        color: forecastDays === 6 ? "black" : "#c2e9eb",
-                        backgroundColor:
-                          forecastDays === 6 ? "#c2e9eb" : "black",
-                        border: "1px solid #000",
-                        borderRadius: "20px",
-                        "&:hover": {
-                          backgroundColor: "gray",
-                        },
-                      }}
-                    >
-                      6 days
-                    </Button>
-                  </Box>
-                </div>
-              </Box>
+                    {Array.from({ length: forecastDays }).map((_, dayIndex) => {
+                      // Start from the next day's temperature
+                      const dailyTemps = allTemp.slice(
+                        (dayIndex + 1) * 24,
+                        (dayIndex + 2) * 24
+                      );
 
-              {allTemp && (
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    overflowY: "auto",
-                    maxHeight: "12rem",
-                  }}
-                >
-                  {Array.from({ length: forecastDays }).map((_, dayIndex) => {
-                    // Start from the next day's temperature
-                    const dailyTemps = allTemp.slice(
-                      (dayIndex + 1) * 24,
-                      (dayIndex + 2) * 24
-                    );
+                      const maxTemp = Math.max(...dailyTemps);
+                      const minTemp = Math.min(...dailyTemps);
+                      const incrementedDate =
+                        Number(formattedDate.slice(5, 7)) + dayIndex;
 
-                    const maxTemp = Math.max(...dailyTemps);
-                    const minTemp = Math.min(...dailyTemps);
-                    const incrementedDate =
-                      Number(formattedDate.slice(5, 7)) + dayIndex;
-
-                    return (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          borderRadius: 5,
-                          padding: "0.5rem",
-                          margin: "0.25rem",
-                          backgroundColor: "#1e1f24",
-                        }}
-                        key={uuid()}
-                      >
-                        <Typography sx={{ fontSize: "1.5rem" }}>
-                          +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
-                        </Typography>
+                      return (
                         <Box
                           sx={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-end", // This will align children to the bottom
-                            flexGrow: 1,
+                            borderRadius: 5,
+                            padding: "0.5rem",
+                            margin: "0.25rem",
+                            backgroundColor: "#1e1f24",
                           }}
+                          key={uuid()}
                         >
+                          <Typography sx={{ fontSize: "1.5rem" }}>
+                            +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "flex-end", // This will align children to the bottom
+                              flexGrow: 1,
+                            }}
+                          >
+                            <Typography sx={{ fontSize: "1rem" }}>
+                              / +
+                              {unit === "C" ? minTemp : toFahrenheit(minTemp)}°
+                            </Typography>
+                          </Box>
                           <Typography sx={{ fontSize: "1rem" }}>
-                            / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
+                            Date - {incrementedDate}
                           </Typography>
                         </Box>
-                        <Typography sx={{ fontSize: "1rem" }}>
-                          Date - {incrementedDate}
+                      );
+                    })}
+                  </Box>
+                )}
+              </Box>
+            </Box>
+
+            {/* row-3 */}
+            <Box sx={{ display: "flex", minHeight: "18vh" }}>
+              {/* Box 5 */}
+              <Box
+                sx={{
+                  flex: 2,
+                  borderRadius: "20px",
+                  backgroundColor: "#1e1f24",
+                  width: "50%",
+                  position: "relative", // Step 1: Add relative positioning
+
+                  // Step 2: Add the ::after pseudo-element
+                  "::after": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: "50%", // you can adjust the width as needed
+                    backgroundImage:
+                      "linear-gradient(to right, transparent, #1e1f24)",
+                  },
+                }}
+              >
+                <TemperatureBox>
+                  {prevData?.map((each) => (
+                    <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
+                      <Typography>{each.userval}</Typography>
+                      <Typography fontSize={"1.25rem"}>{each.city}</Typography>
+                      <Typography fontSize={"0.65rem"}>{each.state}</Typography>
+                      <Box display={"flex"}>
+                        <Typography fontSize={"1.25rem"}>
+                          {each.temp}
+                        </Typography>
+                        <Typography component="span" sx={{ fontSize: "1rem" }}>
+                          °
                         </Typography>
                       </Box>
-                    );
-                  })}
-                </Box>
-              )}
+                    </PrevDataContainer>
+                  ))}
+                </TemperatureBox>
+              </Box>
+              <Box
+                sx={{
+                  flex: 1,
+                  margin: "10px",
+                  padding: "10px",
+                  borderRadius: "20px",
+                  backgroundColor: "#2e2e39",
+                  color: "white",
+                }}
+              >
+                right
+              </Box>
             </Box>
           </Box>
-
-          {/* row-3 */}
-          <Box sx={{ display: "flex", minHeight: "18vh" }}>
-            {/* Box 5 */}
-            <Box
-              sx={{
-                flex: 2,
-                borderRadius: "20px",
-                backgroundColor: "#1e1f24",
-                width: "50%",
-                position: "relative", // Step 1: Add relative positioning
-
-                // Step 2: Add the ::after pseudo-element
-                "::after": {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: "50%", // you can adjust the width as needed
-                  backgroundImage:
-                    "linear-gradient(to right, transparent, #1e1f24)",
-                },
-              }}
-            >
-              <TemperatureBox>
-                {prevData?.map((each) => (
-                  <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
-                    <Typography>{each.userval}</Typography>
-                    <Typography fontSize={"1.25rem"}>{each.city}</Typography>
-                    <Typography fontSize={"0.65rem"}>{each.state}</Typography>
-                    <Box display={"flex"}>
-                      <Typography fontSize={"1.25rem"}>{each.temp}</Typography>
-                      <Typography component="span" sx={{ fontSize: "1rem" }}>
-                        °
-                      </Typography>
-                    </Box>
-                  </PrevDataContainer>
-                ))}
-              </TemperatureBox>
-            </Box>
-            <Box
-              sx={{
-                flex: 1,
-                margin: "10px",
-                padding: "10px",
-                borderRadius: "20px",
-                backgroundColor: "#2e2e39",
-                color: "white",
-              }}
-            >
-              right
-            </Box>
-          </Box>
-        </Box>
+        
       </MainContainer>
     </Layout>
   );
