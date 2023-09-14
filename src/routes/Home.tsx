@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
@@ -18,6 +18,7 @@ import FirstBox from "../components/FirstBox";
 import SecondBox from "../components/SecondBox";
 import ThirdBox from "../components/ThirdBox";
 // import { useAuthContext } from "../hooks/useAuthContext";
+import { v4 as uuid } from 'uuid';
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -98,7 +99,7 @@ function Home() {
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
   const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
 
-  const fetchApi = async () => {
+  const fetchApi = useCallback(async () => {
     try {
       const res = await fetch(API);
       const data = await res.json();
@@ -120,7 +121,7 @@ function Home() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [API]);
 
   const fetchCityApi = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,7 +150,7 @@ function Home() {
     if (latitude !== null && longitude !== null) {
       fetchApi();
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, fetchApi]);
 
   const handleThreeDaysClick = () => {
     setForecastDays(3);
@@ -171,7 +172,7 @@ function Home() {
     return existingValues;
   };
 
-  const handleKeyPress = async (e) => {
+  const handleKeyPress = async (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (e.key === "Enter") {
       try {
         await fetchCityApi(e); // First fetch city data
@@ -211,7 +212,6 @@ function Home() {
           results.push(doc.data() as FirestoreDocument);
         });
         temp && setPrevData((prev) => (prev ? [...prev, ...results] : results));
-        console.log(prevData);
       })
       .catch((err) => {
         console.error("Failed to fetch data:", err);
@@ -436,7 +436,7 @@ function Home() {
                             margin: "0.25rem",
                             backgroundColor: "#1e1f24",
                           }}
-                          key={dayIndex}
+                          key={uuid()}
                         >
                           <Typography sx={{ fontSize: "1.5rem" }}>
                             +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
@@ -490,8 +490,8 @@ function Home() {
                 }}
               >
                 <TemperatureBox>
-                  {prevData?.map((each, index) => (
-                    <PrevDataContainer key={index} sx={{ color: "white" }}>
+                  {prevData?.map((each) => (
+                    <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
                       <Typography>{each.userval}</Typography>
                       <Typography fontSize={"1.25rem"}>{each.city}</Typography>
                       <Typography fontSize={"0.65rem"}>{each.state}</Typography>

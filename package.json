@@ -19,7 +19,8 @@
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.15.0",
-    "recharts": "^2.8.0"
+    "recharts": "^2.8.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
