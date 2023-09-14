@@ -10,27 +10,13 @@ import {
   Card,
   Input,
   Typography,
-  Grid,
   Button,
   styled,
 } from "@mui/material";
-
-import coldImage from "../images/snow.png";
-import hotImage from "../images/sunny.png";
-import mildImage from "../images/rainy-day.png";
-import mainImage from "../images/fog.png";
-
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import FirstBox from "../components/FirstBox";
+import SecondBox from "../components/SecondBox";
+import ThirdBox from "../components/ThirdBox";
 // import { useAuthContext } from "../hooks/useAuthContext";
 
 const Layout = styled(Box)(() => ({
@@ -55,19 +41,6 @@ const MainContainer = styled(Box)(() => ({
   overflow: "hidden",
 }));
 
-const CardContainer = styled(Card)(() => ({
-  minWidth: "50px",
-  height: "100px",
-  padding: "7px",
-  margin: "5px",
-  borderRadius: "25px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#c2e9eb",
-}));
-
 const PrevDataContainer = styled(Card)(() => ({
   minWidth: "7rem",
   height: "4rem",
@@ -88,24 +61,6 @@ const TemperatureBox = styled(Box)(() => ({
   overflowX: "auto",
   minWidth: "100%",
   borderRadius: "20px",
-}));
-
-const TemperatureContext = styled(Typography)(() => ({
-  width: "fit-content",
-  fontSize: "2rem",
-}));
-
-const Subtitle = styled(Typography)(() => ({
-  fontSize: "0.75rem",
-  width: "fit-content",
-}));
-
-const Map = styled(Box)(() => ({
-  flex: 1,
-  margin: "10px",
-  padding: "10px",
-  backgroundColor: "transparent",
-  color: "white",
 }));
 
 const FirstCol = styled(Box)(() => ({
@@ -137,10 +92,6 @@ function Home() {
   );
 
   const [unit, setUnit] = React.useState<"C" | "F">("C");
-
-  const toFahrenheit = (celsius: number): number => {
-    return Math.round(celsius * 9) / 5 + 32;
-  };
 
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
@@ -181,16 +132,6 @@ function Home() {
       }
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const getWeatherImage = (temperature: number) => {
-    if (temperature < 10) {
-      return coldImage;
-    } else if (temperature >= 10 && temperature <= 25) {
-      return mildImage;
-    } else {
-      return hotImage;
     }
   };
 
@@ -274,11 +215,15 @@ function Home() {
       });
   }, [temp]);
 
+  const toFahrenheit = (celsius: number): number => {
+    return Math.round(celsius * 9) / 5 + 32;
+  };
+
   return (
     <Layout>
       {/* sidebar */}
       <Sidebar />
-      {/* main */}
+      {/* mainbox */}
       <MainContainer>
         {/* navbar */}
         <Navbar>
@@ -354,108 +299,25 @@ function Home() {
             {/* row-1 */}
             <Box sx={{ display: "flex", minHeight: "25vh" }}>
               {/* Box 1 */}
-
               <FirstCol>
-                <Box height={"50%"}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={3} sx={{ textAlign: "center" }}>
-                      <img
-                        src={mainImage}
-                        alt=""
-                        style={{ width: "5rem", height: "5rem" }}
-                      />
-                    </Grid>
-
-                    <Grid item xs={3}>
-                      <TemperatureContext variant="h5">
-                        {city ? city : "City not found"}
-                      </TemperatureContext>
-                      <Subtitle>{state ? state : "State not found"}</Subtitle>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                      <TemperatureContext display={"flex"}>
-                        +{unit === "C" ? temp : toFahrenheit(Number(temp))}
-                        <Typography component="span" sx={{ fontSize: "2rem" }}>
-                          °
-                        </Typography>
-                      </TemperatureContext>
-                      <Subtitle>Temperature</Subtitle>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                      <TemperatureContext>
-                        {humidity && humidity}
-                        <Typography component="span" sx={{ fontSize: "1rem" }}>
-                          %
-                        </Typography>
-                      </TemperatureContext>
-                      <Subtitle>Humidity</Subtitle>
-                    </Grid>
-
-                    <Grid item xs={2}>
-                      <TemperatureContext>
-                        {windSpeed && windSpeed}
-                        <Typography component="span" sx={{ fontSize: "1rem" }}>
-                          km/h
-                        </Typography>{" "}
-                      </TemperatureContext>
-                      <Subtitle>Wind Speed</Subtitle>
-                    </Grid>
-                  </Grid>
-                </Box>
-
-                <TemperatureBox>
-                  {allTemp.slice(0, 24).map((each, index) => {
-                    return (
-                      <CardContainer variant="outlined" key={index}>
-                        <Typography sx={{ fontSize: "12px" }}>
-                          {allTime[index] < 12
-                            ? `${allTime[index]} am`
-                            : `${allTime[index]} pm`}
-                        </Typography>
-                        <img
-                          src={getWeatherImage(each)}
-                          alt="Weather Icon"
-                          style={{ width: "2rem", height: "2rem" }}
-                        />
-                        <Typography variant="h6" sx={{ fontSize: "15px" }}>
-                          {unit === "C" ? each : toFahrenheit(each)}°
-                        </Typography>
-                      </CardContainer>
-                    );
-                  })}
-                </TemperatureBox>
+                <FirstBox
+                  city={city}
+                  state={state}
+                  temp={temp}
+                  unit={unit}
+                  humidity={humidity}
+                  windSpeed={windSpeed}
+                  allTemp={allTemp}
+                  allTime={allTime}
+                />
               </FirstCol>
-
               {/* Box 2 */}
-              <Map>
-                {latitude && longitude && (
-                  <MapContainer
-                    key={`${latitude}-${longitude}`}
-                    // @ts-ignore
-                    center={[latitude, longitude]}
-                    zoom={13}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: "20px",
-                    }}
-                  >
-                    <TileLayer
-                      // @ts-ignore
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      // @ts-ignore
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    <Marker position={[latitude, longitude]}>
-                      <Popup>
-                        {city}, {state}
-                      </Popup>
-                    </Marker>
-                  </MapContainer>
-                )}
-              </Map>
+              <SecondBox
+                latitude={latitude}
+                longitude={longitude}
+                city={city}
+                state={state}
+              />
             </Box>
 
             {/* row-2 */}
@@ -469,41 +331,7 @@ function Home() {
                 }}
               >
                 {allHumidity && (
-                  <ResponsiveContainer width="100%" height={250}>
-                    <LineChart
-                      data={allHumidity.map(
-                        (humidity: number, index: number) => ({
-                          humidity,
-                          time: allTime[index],
-                        })
-                      )}
-                      margin={{
-                        top: 20,
-                        right: 30,
-                        left: 0,
-                        bottom: 0,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
-                      <XAxis dataKey="time" stroke="white" />
-                      <YAxis stroke="white" />
-                      <Tooltip
-                        wrapperStyle={{
-                          backgroundColor: "#f0f0f0",
-                          color: "white",
-                        }}
-                        contentStyle={{ color: "white" }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="humidity"
-                        stroke="#c2e9eb"
-                        dot={false} // This line removes the dots
-                        activeDot={{ r: 8 }}
-                        strokeWidth={3}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <ThirdBox allHumidity={allHumidity} allTime={allTime} />
                 )}
               </FirstCol>
 
@@ -595,7 +423,7 @@ function Home() {
                           key={dayIndex}
                         >
                           <Typography sx={{ fontSize: "1.5rem" }}>
-                            +{maxTemp}°
+                            +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
                           </Typography>
                           <Box
                             sx={{
@@ -606,7 +434,7 @@ function Home() {
                             }}
                           >
                             <Typography sx={{ fontSize: "1rem" }}>
-                              / {minTemp}°
+                              / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
                             </Typography>
                           </Box>
                           <Typography sx={{ fontSize: "1rem" }}>
