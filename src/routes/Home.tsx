@@ -86,23 +86,24 @@ function Home() {
   const [humidity, setHumidity] = React.useState<string | null>(null);
   const [allHumidity, setAllHumidity] = React.useState<number[] | null>(null);
   const [windSpeed, setWindSpeed] = React.useState<string | null>(null);
+  const [allWindSpeed, setAllWindSpeed] = React.useState<number[]>([]);
   const [forecastDays, setForecastDays] = React.useState<number>(3);
   const [prevData, setPrevData] = React.useState<FirestoreDocument[] | null>(
     null
   );
-
+  const [uvIndex, setUvIndex] = React.useState<number[]>([]);
   const [unit, setUnit] = React.useState<"C" | "F">("C");
 
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
-  const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m`;
+  const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
 
   const fetchApi = async () => {
     try {
       const res = await fetch(API);
       const data = await res.json();
       if (res.ok) {
-        console.log(data);
+        console.log("data", data);
         setTemp(data.hourly.temperature_2m[new Date().getHours()]);
         setAllTemp(data.hourly.temperature_2m);
         setAllTime(
@@ -113,6 +114,8 @@ function Home() {
         setHumidity(data.hourly.relativehumidity_2m[new Date().getHours()]);
         setAllHumidity(data.hourly.relativehumidity_2m);
         setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
+        setAllWindSpeed(data.hourly.windspeed_10m);
+        setUvIndex(data.hourly.uv_index);
       }
     } catch (error) {
       console.log(error);
@@ -325,13 +328,23 @@ function Home() {
               {/* Box 3 */}
               <FirstCol
                 sx={{
-                  display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  margin: "10px",
+                  padding: "10px",
+                  borderRadius: "20px",
+                  backgroundColor: "#2e2e39",
+                  color: "white",
+                  width: "50%",
                 }}
               >
                 {allHumidity && (
-                  <ThirdBox allHumidity={allHumidity} allTime={allTime} />
+                  <ThirdBox
+                    allHumidity={allHumidity}
+                    allTime={allTime}
+                    uvIndex={uvIndex}
+                    allWindSpeed={allWindSpeed}
+                  />
                 )}
               </FirstCol>
 
@@ -348,44 +361,47 @@ function Home() {
               >
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <h1 style={{ margin: 0, padding: 0 }}>ForeCast</h1>
-                  <div
-                    className="btn"
-                    style={{
-                      borderRadius: "20px",
-                      backgroundColor: "black",
-                    }}
-                  >
-                    <Button
-                      className="btn"
-                      onClick={handleThreeDaysClick}
+                  <div className="btn">
+                    <Box
                       sx={{
-                        color: forecastDays === 3 ? "black" : "#c2e9eb",
-                        backgroundColor:
-                          forecastDays === 3 ? "#c2e9eb" : "black",
                         borderRadius: "20px",
-                        "&:hover": {
-                          backgroundColor: "gray",
-                        },
+                        backgroundColor: "black",
                       }}
                     >
-                      3 days
-                    </Button>
-                    <Button
-                      className="btn"
-                      onClick={handleSixDaysClick}
-                      sx={{
-                        color: forecastDays === 6 ? "black" : "#c2e9eb",
-                        backgroundColor:
-                          forecastDays === 6 ? "#c2e9eb" : "black",
-                        border: "1px solid #000",
-                        borderRadius: "20px",
-                        "&:hover": {
-                          backgroundColor: "gray",
-                        },
-                      }}
-                    >
-                      6 days
-                    </Button>
+                      <Button
+                        className="btn"
+                        size="small"
+                        onClick={handleThreeDaysClick}
+                        sx={{
+                          color: forecastDays === 3 ? "black" : "#c2e9eb",
+                          backgroundColor:
+                            forecastDays === 3 ? "#c2e9eb" : "black",
+                          borderRadius: "20px",
+                          "&:hover": {
+                            backgroundColor: "gray",
+                          },
+                        }}
+                      >
+                        3 days
+                      </Button>
+                      <Button
+                        className="btn"
+                        size="small"
+                        onClick={handleSixDaysClick}
+                        sx={{
+                          color: forecastDays === 6 ? "black" : "#c2e9eb",
+                          backgroundColor:
+                            forecastDays === 6 ? "#c2e9eb" : "black",
+                          border: "1px solid #000",
+                          borderRadius: "20px",
+                          "&:hover": {
+                            backgroundColor: "gray",
+                          },
+                        }}
+                      >
+                        6 days
+                      </Button>
+                    </Box>
                   </div>
                 </Box>
 
@@ -434,7 +450,8 @@ function Home() {
                             }}
                           >
                             <Typography sx={{ fontSize: "1rem" }}>
-                              / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
+                              / +
+                              {unit === "C" ? minTemp : toFahrenheit(minTemp)}°
                             </Typography>
                           </Box>
                           <Typography sx={{ fontSize: "1rem" }}>
