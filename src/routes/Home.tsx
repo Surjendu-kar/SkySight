@@ -108,6 +108,16 @@ const Map = styled(Box)(() => ({
   color: "white",
 }));
 
+const FirstCol = styled(Box)(() => ({
+  flex: 2,
+  margin: "10px",
+  padding: "10px",
+  borderRadius: "20px",
+  backgroundColor: "#2e2e39",
+  color: "white",
+  width: "50%",
+}));
+
 type FirestoreDocument = Record<string, any>;
 function Home() {
   const [userVal, setUserVal] = React.useState("");
@@ -164,8 +174,6 @@ function Home() {
       const res = await fetch(cityApi);
       const data = await res.json();
       if (res.ok && data[0]) {
-        // console.log(data);
-
         setLatitude(data[0].lat);
         setLongitude(data[0].lon);
         setCity(data[0].name);
@@ -211,28 +219,42 @@ function Home() {
     // used to fetch firebase data
     const ref = collection(projectFirestore, "searchval");
     const querySnapshot = await getDocs(ref);
-    let existingValues = [];
+    const existingValues: string[] = [];
     querySnapshot.forEach((doc) => {
       existingValues.push(doc.data().userval);
     });
+    console.log(existingValues);
     return existingValues;
   };
 
   const handleKeyPress = async (e) => {
     if (e.key === "Enter") {
-      fetchCityApi(e);
-      const existingValues = await fetchExistingValues();
+      try {
+        await fetchCityApi(e); // First fetch city data
+        await fetchApi(); // Then fetch weather data
 
-      if (userVal && temp && !existingValues.includes(userVal)) {
-        // here we check that the data is already exist or not
-        const ref = collection(projectFirestore, "searchval");
-        await addDoc(ref, {
-          // add user search val to the firebase
-          userval: userVal,
-          city: city,
-          state: state,
-          temp: temp,
-        });
+        console.log("Fetched city data successfully.");
+        const existingValues = await fetchExistingValues();
+
+        console.log("Existing values:", existingValues);
+        console.log(userVal, temp, existingValues);
+
+        if (userVal && temp && !existingValues.includes(userVal)) {
+          const ref = collection(projectFirestore, "searchval");
+          const dataToPush = {
+            userval: userVal,
+            city: city,
+            state: state,
+            temp: temp,
+          };
+          console.log("Pushing data to Firestore:", dataToPush);
+          await addDoc(ref, dataToPush);
+          console.log("Data pushed successfully.");
+        } else {
+          console.log("Conditions not met to push data to Firestore.");
+        }
+      } catch (error) {
+        console.error("Error in handleKeyPress:", error);
       }
     }
   };
@@ -332,17 +354,8 @@ function Home() {
             {/* row-1 */}
             <Box sx={{ display: "flex", minHeight: "25vh" }}>
               {/* Box 1 */}
-              <Box
-                sx={{
-                  flex: 2,
-                  margin: "10px",
-                  padding: "10px",
-                  borderRadius: "20px",
-                  backgroundColor: "#2e2e39",
-                  color: "white",
-                  width: "50%",
-                }}
-              >
+
+              <FirstCol>
                 <Box height={"50%"}>
                   <Grid container spacing={2}>
                     <Grid item xs={3} sx={{ textAlign: "center" }}>
@@ -407,19 +420,19 @@ function Home() {
                           style={{ width: "2rem", height: "2rem" }}
                         />
                         <Typography variant="h6" sx={{ fontSize: "15px" }}>
-                          {unit === "C" ? each : toFahrenheit(each)}
+                          {unit === "C" ? each : toFahrenheit(each)}°
                         </Typography>
                       </CardContainer>
                     );
                   })}
                 </TemperatureBox>
-              </Box>
+              </FirstCol>
 
               {/* Box 2 */}
               <Map>
                 {latitude && longitude && (
                   <MapContainer
-                    key={`${latitude}-${longitude}`} // <-- Add this line
+                    key={`${latitude}-${longitude}`}
                     // @ts-ignore
                     center={[latitude, longitude]}
                     zoom={13}
@@ -448,18 +461,11 @@ function Home() {
             {/* row-2 */}
             <Box sx={{ display: "flex", maxHeight: "38vh" }}>
               {/* Box 3 */}
-              <Box
+              <FirstCol
                 sx={{
-                  flex: 2,
-                  margin: "10px",
-                  padding: "10px",
-                  borderRadius: "20px",
-                  backgroundColor: "#2e2e39",
-                  color: "white",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  width: "50%",
                 }}
               >
                 {allHumidity && (
@@ -499,7 +505,7 @@ function Home() {
                     </LineChart>
                   </ResponsiveContainer>
                 )}
-              </Box>
+              </FirstCol>
 
               {/* Box 4 */}
               <Box
@@ -629,10 +635,12 @@ function Home() {
                   {prevData?.map((each, index) => (
                     <PrevDataContainer key={index} sx={{ color: "white" }}>
                       <Typography>{each.userval}</Typography>
-                      <Typography fontSize={'1.25rem'}>{each.city}</Typography>
-                      <Typography fontSize={'0.65rem'}>{each.state}</Typography>
+                      <Typography fontSize={"1.25rem"}>{each.city}</Typography>
+                      <Typography fontSize={"0.65rem"}>{each.state}</Typography>
                       <Box display={"flex"}>
-                        <Typography>{each.temp}</Typography>
+                        <Typography fontSize={"1.25rem"}>
+                          {each.temp}
+                        </Typography>
                         <Typography component="span" sx={{ fontSize: "1rem" }}>
                           °
                         </Typography>
