@@ -474,6 +474,19 @@ function Home() {
                   borderRadius: "20px",
                   backgroundColor: "#1e1f24",
                   width: "50%",
+                  position: "relative", // Step 1: Add relative positioning
+
+                  // Step 2: Add the ::after pseudo-element
+                  "::after": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: "50%", // you can adjust the width as needed
+                    backgroundImage:
+                      "linear-gradient(to right, transparent, #1e1f24)",
+                  },
                 }}
               >
                 <TemperatureBox>
