@@ -135,8 +135,8 @@ function Home() {
   useEffect(() => {
     setLatitude(23.3322);
     setLongitude(86.3616);
-    setCity('Purulia')
-    setState('West Bengal')
+    setCity("Purulia");
+    setState("West Bengal");
   }, []);
 
   const fetchCityApi = async (e: React.FormEvent) => {
@@ -206,7 +206,11 @@ function Home() {
         const weatherData = await fetchApi(); // This now directly returns the needed data.
 
         const existingValues = await fetchExistingValues();
-
+        if (!existingValues) {
+          console.error("Failed to fetch existing values");
+          return;
+        }
+        
         if (user && typeof user.email === "string" && user.email !== "") {
           if (
             userVal &&
