@@ -19,6 +19,7 @@ import SecondBox from "../components/SecondBox";
 import ThirdBox from "../components/ThirdBox";
 // import { useAuthContext } from "../hooks/useAuthContext";
 import { v4 as uuid } from "uuid";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -94,6 +95,7 @@ function Home() {
   );
   const [uvIndex, setUvIndex] = React.useState<number[]>([]);
   const [unit, setUnit] = React.useState<"C" | "F">("C");
+  const { user } = useAuthContext();
 
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
@@ -104,8 +106,10 @@ function Home() {
       const res = await fetch(API);
       const data = await res.json();
       if (res.ok) {
-        console.log("data", data);
-        setTemp(data.hourly.temperature_2m[new Date().getHours()]);
+        // console.log("data", data);
+        const currentHourTemp =
+          data.hourly.temperature_2m[new Date().getHours()];
+        setTemp(currentHourTemp);
         setAllTemp(data.hourly.temperature_2m);
         setAllTime(
           data.hourly.time.map((each: string) => {
@@ -117,11 +121,23 @@ function Home() {
         setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
         setAllWindSpeed(data.hourly.windspeed_10m);
         setUvIndex(data.hourly.uv_index);
+        return {
+          temp: currentHourTemp,
+        };
       }
+      return null;
     } catch (error) {
       console.log(error);
+      return null;
     }
   }, [API]);
+
+  useEffect(() => {
+    setLatitude(23.3322);
+    setLongitude(86.3616);
+    setCity('Purulia')
+    setState('West Bengal')
+  }, []);
 
   const fetchCityApi = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,9 +149,15 @@ function Home() {
         setLongitude(data[0].lon);
         setCity(data[0].name);
         setState(data[0].state);
+        return {
+          name: data[0].name,
+          state: data[0].state,
+        };
       }
+      return null;
     } catch (error) {
       console.log(error);
+      return null;
     }
   };
 
@@ -162,14 +184,17 @@ function Home() {
 
   const fetchExistingValues = async () => {
     // used to fetch firebase data
-    const ref = collection(projectFirestore, "searchval");
-    const querySnapshot = await getDocs(ref);
-    const existingValues: string[] = [];
-    querySnapshot.forEach((doc) => {
-      existingValues.push(doc.data().userval);
-    });
-    console.log(existingValues);
-    return existingValues;
+    if (user && typeof user.email === "string") {
+      // const userCollectionName = user.email;
+      const ref = collection(projectFirestore, user.email);
+      const querySnapshot = await getDocs(ref);
+      const existingValues: string[] = [];
+      querySnapshot.forEach((doc) => {
+        existingValues.push(doc.data().userval);
+      });
+      console.log(existingValues);
+      return existingValues;
+    }
   };
 
   const handleKeyPress = async (
@@ -177,28 +202,33 @@ function Home() {
   ) => {
     if (e.key === "Enter") {
       try {
-        await fetchCityApi(e); // First fetch city data
-        await fetchApi(); // Then fetch weather data
+        const cityData = await fetchCityApi(e); // This now directly returns the needed data.
+        const weatherData = await fetchApi(); // This now directly returns the needed data.
 
-        console.log("Fetched city data successfully.");
         const existingValues = await fetchExistingValues();
 
-        console.log("Existing values:", existingValues);
-        console.log(userVal, temp, existingValues);
-
-        if (userVal && temp && !existingValues.includes(userVal)) {
-          const ref = collection(projectFirestore, "searchval");
-          const dataToPush = {
-            userval: userVal,
-            city: city,
-            state: state,
-            temp: temp,
-          };
-          console.log("Pushing data to Firestore:", dataToPush);
-          await addDoc(ref, dataToPush);
-          console.log("Data pushed successfully.");
+        if (user && typeof user.email === "string" && user.email !== "") {
+          if (
+            userVal &&
+            cityData &&
+            weatherData &&
+            !existingValues.includes(userVal)
+          ) {
+            const ref = collection(projectFirestore, user.email);
+            const dataToPush = {
+              userval: userVal,
+              city: cityData.name,
+              state: cityData.state,
+              temp: weatherData.temp,
+            };
+            console.log("Pushing data to Firestore:", dataToPush);
+            await addDoc(ref, dataToPush);
+            console.log("Data pushed successfully.");
+          } else {
+            console.log("Conditions not met to push data to Firestore.");
+          }
         } else {
-          console.log("Conditions not met to push data to Firestore.");
+          console.error("User or user email is not valid");
         }
       } catch (error) {
         console.error("Error in handleKeyPress:", error);
@@ -303,230 +333,226 @@ function Home() {
         </Navbar>
 
         {/* contents */}
-        
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            {/* row-1 */}
-            <Box sx={{ display: "flex", minHeight: "25vh" }}>
-              {/* Box 1 */}
-              <FirstCol>
-                <FirstBox
-                  city={city}
-                  state={state}
-                  temp={temp}
-                  unit={unit}
-                  humidity={humidity}
-                  windSpeed={windSpeed}
-                  allTemp={allTemp}
-                  allTime={allTime}
-                />
-              </FirstCol>
-              {/* Box 2 */}
-              <SecondBox
-                latitude={latitude}
-                longitude={longitude}
+
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          {/* row-1 */}
+          <Box sx={{ display: "flex", minHeight: "25vh" }}>
+            {/* Box 1 */}
+            <FirstCol>
+              <FirstBox
                 city={city}
                 state={state}
+                temp={temp}
+                unit={unit}
+                humidity={humidity}
+                windSpeed={windSpeed}
+                allTemp={allTemp}
+                allTime={allTime}
               />
-            </Box>
-            {/* row-2 */}
-            <Box sx={{ display: "flex", maxHeight: "38vh" }}>
-              {/* Box 3 */}
-              <FirstCol
-                sx={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  margin: "10px",
-                  padding: "10px",
-                  borderRadius: "20px",
-                  backgroundColor: "#2e2e39",
-                  color: "white",
-                  width: "50%",
-                }}
-              >
-                {allHumidity && (
-                  <ThirdBox
-                    allHumidity={allHumidity}
-                    allTime={allTime}
-                    uvIndex={uvIndex}
-                    allWindSpeed={allWindSpeed}
-                  />
-                )}
-              </FirstCol>
+            </FirstCol>
+            {/* Box 2 */}
+            <SecondBox
+              latitude={latitude}
+              longitude={longitude}
+              city={city}
+              state={state}
+            />
+          </Box>
+          {/* row-2 */}
+          <Box sx={{ display: "flex", maxHeight: "38vh" }}>
+            {/* Box 3 */}
+            <FirstCol
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "10px",
+                padding: "10px",
+                borderRadius: "20px",
+                backgroundColor: "#2e2e39",
+                color: "white",
+                width: "50%",
+              }}
+            >
+              {allHumidity && (
+                <ThirdBox
+                  allHumidity={allHumidity}
+                  allTime={allTime}
+                  uvIndex={uvIndex}
+                  allWindSpeed={allWindSpeed}
+                />
+              )}
+            </FirstCol>
 
-              {/* Box 4 */}
-              <Box
-                sx={{
-                  flex: 1,
-                  margin: "10px",
-                  padding: "10px",
-                  borderRadius: "20px",
-                  backgroundColor: "#2e2e39",
-                  color: "white",
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <h1 style={{ margin: 0, padding: 0 }}>ForeCast</h1>
-                  <div className="btn">
-                    <Box
-                      sx={{
-                        borderRadius: "20px",
-                        backgroundColor: "black",
-                      }}
-                    >
-                      <Button
-                        className="btn"
-                        size="small"
-                        onClick={handleThreeDaysClick}
-                        sx={{
-                          color: forecastDays === 3 ? "black" : "#c2e9eb",
-                          backgroundColor:
-                            forecastDays === 3 ? "#c2e9eb" : "black",
-                          borderRadius: "20px",
-                          "&:hover": {
-                            backgroundColor: "gray",
-                          },
-                        }}
-                      >
-                        3 days
-                      </Button>
-                      <Button
-                        className="btn"
-                        size="small"
-                        onClick={handleSixDaysClick}
-                        sx={{
-                          color: forecastDays === 6 ? "black" : "#c2e9eb",
-                          backgroundColor:
-                            forecastDays === 6 ? "#c2e9eb" : "black",
-                          border: "1px solid #000",
-                          borderRadius: "20px",
-                          "&:hover": {
-                            backgroundColor: "gray",
-                          },
-                        }}
-                      >
-                        6 days
-                      </Button>
-                    </Box>
-                  </div>
-                </Box>
-
-                {allTemp && (
+            {/* Box 4 */}
+            <Box
+              sx={{
+                flex: 1,
+                margin: "10px",
+                padding: "10px",
+                borderRadius: "20px",
+                backgroundColor: "#2e2e39",
+                color: "white",
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <h1 style={{ margin: 0, padding: 0 }}>ForeCast</h1>
+                <div className="btn">
                   <Box
                     sx={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      overflowY: "auto",
-                      maxHeight: "12rem",
+                      borderRadius: "20px",
+                      backgroundColor: "black",
                     }}
                   >
-                    {Array.from({ length: forecastDays }).map((_, dayIndex) => {
-                      // Start from the next day's temperature
-                      const dailyTemps = allTemp.slice(
-                        (dayIndex + 1) * 24,
-                        (dayIndex + 2) * 24
-                      );
+                    <Button
+                      className="btn"
+                      size="small"
+                      onClick={handleThreeDaysClick}
+                      sx={{
+                        color: forecastDays === 3 ? "black" : "#c2e9eb",
+                        backgroundColor:
+                          forecastDays === 3 ? "#c2e9eb" : "black",
+                        borderRadius: "20px",
+                        "&:hover": {
+                          backgroundColor: "gray",
+                        },
+                      }}
+                    >
+                      3 days
+                    </Button>
+                    <Button
+                      className="btn"
+                      size="small"
+                      onClick={handleSixDaysClick}
+                      sx={{
+                        color: forecastDays === 6 ? "black" : "#c2e9eb",
+                        backgroundColor:
+                          forecastDays === 6 ? "#c2e9eb" : "black",
+                        border: "1px solid #000",
+                        borderRadius: "20px",
+                        "&:hover": {
+                          backgroundColor: "gray",
+                        },
+                      }}
+                    >
+                      6 days
+                    </Button>
+                  </Box>
+                </div>
+              </Box>
 
-                      const maxTemp = Math.max(...dailyTemps);
-                      const minTemp = Math.min(...dailyTemps);
-                      const incrementedDate =
-                        Number(formattedDate.slice(5, 7)) + dayIndex;
+              {allTemp && (
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflowY: "auto",
+                    maxHeight: "11rem",
+                  }}
+                >
+                  {Array.from({ length: forecastDays }).map((_, dayIndex) => {
+                    // Start from the next day's temperature
+                    const dailyTemps = allTemp.slice(
+                      (dayIndex + 1) * 24,
+                      (dayIndex + 2) * 24
+                    );
 
-                      return (
+                    const maxTemp = Math.max(...dailyTemps);
+                    const minTemp = Math.min(...dailyTemps);
+                    const incrementedDate =
+                      Number(formattedDate.slice(5, 7)) + dayIndex;
+
+                    return (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          borderRadius: 5,
+                          padding: "0.45rem",
+                          margin: "0.25rem",
+                          backgroundColor: "#1e1f24",
+                        }}
+                        key={uuid()}
+                      >
+                        <Typography sx={{ fontSize: "1.5rem" }}>
+                          +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
+                        </Typography>
                         <Box
                           sx={{
                             display: "flex",
-                            borderRadius: 5,
-                            padding: "0.5rem",
-                            margin: "0.25rem",
-                            backgroundColor: "#1e1f24",
+                            justifyContent: "space-between",
+                            alignItems: "flex-end", // This will align children to the bottom
+                            flexGrow: 1,
                           }}
-                          key={uuid()}
                         >
-                          <Typography sx={{ fontSize: "1.5rem" }}>
-                            +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "flex-end", // This will align children to the bottom
-                              flexGrow: 1,
-                            }}
-                          >
-                            <Typography sx={{ fontSize: "1rem" }}>
-                              / +
-                              {unit === "C" ? minTemp : toFahrenheit(minTemp)}°
-                            </Typography>
-                          </Box>
                           <Typography sx={{ fontSize: "1rem" }}>
-                            Date - {incrementedDate}
+                            / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
                           </Typography>
                         </Box>
-                      );
-                    })}
-                  </Box>
-                )}
-              </Box>
-            </Box>
-
-            {/* row-3 */}
-            <Box sx={{ display: "flex", minHeight: "18vh" }}>
-              {/* Box 5 */}
-              <Box
-                sx={{
-                  flex: 2,
-                  borderRadius: "20px",
-                  backgroundColor: "#1e1f24",
-                  width: "50%",
-                  position: "relative", // Step 1: Add relative positioning
-
-                  // Step 2: Add the ::after pseudo-element
-                  "::after": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: "50%", // you can adjust the width as needed
-                    backgroundImage:
-                      "linear-gradient(to right, transparent, #1e1f24)",
-                  },
-                }}
-              >
-                <TemperatureBox>
-                  {prevData?.map((each) => (
-                    <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
-                      <Typography>{each.userval}</Typography>
-                      <Typography fontSize={"1.25rem"}>{each.city}</Typography>
-                      <Typography fontSize={"0.65rem"}>{each.state}</Typography>
-                      <Box display={"flex"}>
-                        <Typography fontSize={"1.25rem"}>
-                          {each.temp}
-                        </Typography>
-                        <Typography component="span" sx={{ fontSize: "1rem" }}>
-                          °
+                        <Typography sx={{ fontSize: "1rem" }}>
+                          Date - {incrementedDate}
                         </Typography>
                       </Box>
-                    </PrevDataContainer>
-                  ))}
-                </TemperatureBox>
-              </Box>
-              <Box
-                sx={{
-                  flex: 1,
-                  margin: "10px",
-                  padding: "10px",
-                  borderRadius: "20px",
-                  backgroundColor: "#2e2e39",
-                  color: "white",
-                }}
-              >
-                right
-              </Box>
+                    );
+                  })}
+                </Box>
+              )}
             </Box>
           </Box>
-        
+
+          {/* row-3 */}
+          <Box sx={{ display: "flex", minHeight: "18vh" }}>
+            {/* Box 5 */}
+            <Box
+              sx={{
+                flex: 2,
+                borderRadius: "20px",
+                backgroundColor: "#1e1f24",
+                width: "50%",
+                position: "relative", // Step 1: Add relative positioning
+
+                // Step 2: Add the ::after pseudo-element
+                "::after": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: "50%", // you can adjust the width as needed
+                  backgroundImage:
+                    "linear-gradient(to right, transparent, #1e1f24)",
+                },
+              }}
+            >
+              <TemperatureBox>
+                {prevData?.map((each) => (
+                  <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
+                    <Typography>{each.userval}</Typography>
+                    <Typography fontSize={"1.25rem"}>{each.city}</Typography>
+                    <Typography fontSize={"0.65rem"}>{each.state}</Typography>
+                    <Box display={"flex"}>
+                      <Typography fontSize={"1.25rem"}>{each.temp}</Typography>
+                      <Typography component="span" sx={{ fontSize: "1rem" }}>
+                        °
+                      </Typography>
+                    </Box>
+                  </PrevDataContainer>
+                ))}
+              </TemperatureBox>
+            </Box>
+            <Box
+              sx={{
+                flex: 1,
+                margin: "10px",
+                padding: "10px",
+                borderRadius: "20px",
+                backgroundColor: "#2e2e39",
+                color: "white",
+              }}
+            >
+              right
+            </Box>
+          </Box>
+        </Box>
       </MainContainer>
     </Layout>
   );

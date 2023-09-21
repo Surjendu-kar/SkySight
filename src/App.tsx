@@ -41,16 +41,16 @@ function LoginRoute() {
 }
 
 function SignUpRoute() {
-  const { user } = useAuthContext();
-  const navigate = useNavigate();
+  // const { user } = useAuthContext();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      navigate("/home");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/home");
+  //   }
+  // }, [user, navigate]);
 
-  if (user) return null;
+  // if (user) return null;
   return <RouteWrapper Component={SignUp} />;
 }
 

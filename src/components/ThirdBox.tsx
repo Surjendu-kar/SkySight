@@ -111,7 +111,7 @@ function ThirdBox({
         </Box>
       </Box>
 
-      <ResponsiveContainer width="100%" height={150}>
+      <ResponsiveContainer width="100%" height={160}>
         <LineChart data={mappedData} margin={{ right: 30, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
           <XAxis dataKey="time" stroke="white" />
