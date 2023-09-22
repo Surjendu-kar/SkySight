@@ -4,22 +4,15 @@ import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
-import {
-  Avatar,
-  Box,
-  Card,
-  Input,
-  Typography,
-  Button,
-  styled,
-} from "@mui/material";
+import { Avatar, Box, Input, Typography, Button, styled } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import FirstBox from "../components/FirstBox";
 import SecondBox from "../components/SecondBox";
 import ThirdBox from "../components/ThirdBox";
-// import { useAuthContext } from "../hooks/useAuthContext";
 import { v4 as uuid } from "uuid";
+
 import { useAuthContext } from "../hooks/useAuthContext";
+import FifthBox from "../components/FifthBox";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -36,33 +29,12 @@ const Navbar = styled(Box)(() => ({
   backgroundColor: "#1e1f24",
   color: "white",
   padding: "0 10px",
+  marginTop: "10px",
 }));
 
 const MainContainer = styled(Box)(() => ({
   flex: "1",
   overflow: "hidden",
-}));
-
-const PrevDataContainer = styled(Card)(() => ({
-  minWidth: "7rem",
-  height: "4rem",
-  padding: "20px",
-  margin: "5px",
-  borderRadius: "20px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#2e2e39",
-}));
-
-const TemperatureBox = styled(Box)(() => ({
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  overflowX: "auto",
-  minWidth: "100%",
-  borderRadius: "20px",
 }));
 
 const FirstCol = styled(Box)(() => ({
@@ -210,7 +182,7 @@ function Home() {
           console.error("Failed to fetch existing values");
           return;
         }
-        
+
         if (user && typeof user.email === "string" && user.email !== "") {
           if (
             userVal &&
@@ -241,18 +213,21 @@ function Home() {
   };
 
   useEffect(() => {
-    getDocs(collection(projectFirestore, "searchval"))
-      .then((snapshot) => {
-        const results: FirestoreDocument[] = [];
-        snapshot.docs.forEach((doc) => {
-          results.push(doc.data() as FirestoreDocument);
+    if (user && typeof user.email === "string") {
+      getDocs(collection(projectFirestore, user.email))
+        .then((snapshot) => {
+          const results: FirestoreDocument[] = [];
+          snapshot.docs.forEach((doc) => {
+            results.push(doc.data() as FirestoreDocument);
+          });
+          temp &&
+            setPrevData((prev) => (prev ? [...prev, ...results] : results));
+        })
+        .catch((err) => {
+          console.error("Failed to fetch data:", err);
         });
-        temp && setPrevData((prev) => (prev ? [...prev, ...results] : results));
-      })
-      .catch((err) => {
-        console.error("Failed to fetch data:", err);
-      });
-  }, [temp]);
+    }
+  }, [temp, user]);
 
   const toFahrenheit = (celsius: number): number => {
     return Math.round(celsius * 9) / 5 + 32;
@@ -273,6 +248,9 @@ function Home() {
               sx={{ width: 24, height: 24, marginRight: "5px" }}
             />
             <Typography fontSize={"1rem"}>{formattedDate}</Typography>
+          </Box>
+          <Box sx={{ justifyContent: "center" }}>
+            <h1 style={{ margin: 0, padding: 0 }}>SkySight</h1>
           </Box>
 
           <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
@@ -300,37 +278,39 @@ function Home() {
             {/* <Box>lan</Box> */}
 
             {temp && (
-              <Box sx={{ borderRadius: "20px", backgroundColor: "black" }}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  sx={{
-                    color: unit === "C" ? "black" : "#c2e9eb",
-                    backgroundColor: unit === "C" ? "#c2e9eb" : "black",
-                    borderRadius: "20px",
-                    "&:hover": {
-                      backgroundColor: "gray",
-                    },
-                  }}
-                  onClick={() => setUnit("C")}
-                >
-                  C°
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  sx={{
-                    color: unit === "F" ? "black" : "#c2e9eb",
-                    backgroundColor: unit === "F" ? "#c2e9eb" : "black",
-                    borderRadius: "20px",
-                    "&:hover": {
-                      backgroundColor: "gray",
-                    },
-                  }}
-                  onClick={() => setUnit("F")}
-                >
-                  F°
-                </Button>
+              <Box>
+                <Box sx={{ borderRadius: "20px", backgroundColor: "black" }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      color: unit === "C" ? "black" : "#c2e9eb",
+                      backgroundColor: unit === "C" ? "#c2e9eb" : "black",
+                      borderRadius: "20px",
+                      "&:hover": {
+                        backgroundColor: "gray",
+                      },
+                    }}
+                    onClick={() => setUnit("C")}
+                  >
+                    C°
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      color: unit === "F" ? "black" : "#c2e9eb",
+                      backgroundColor: unit === "F" ? "#c2e9eb" : "black",
+                      borderRadius: "20px",
+                      "&:hover": {
+                        backgroundColor: "gray",
+                      },
+                    }}
+                    onClick={() => setUnit("F")}
+                  >
+                    F°
+                  </Button>
+                </Box>
               </Box>
             )}
           </Box>
@@ -399,7 +379,7 @@ function Home() {
               }}
             >
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <h1 style={{ margin: 0, padding: 0 }}>ForeCast</h1>
+                <h2 style={{ margin: 0, padding: 0 }}>ForeCast</h2>
                 <div className="btn">
                   <Box
                     sx={{
@@ -527,33 +507,23 @@ function Home() {
                 },
               }}
             >
-              <TemperatureBox>
-                {prevData?.map((each) => (
-                  <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
-                    <Typography>{each.userval}</Typography>
-                    <Typography fontSize={"1.25rem"}>{each.city}</Typography>
-                    <Typography fontSize={"0.65rem"}>{each.state}</Typography>
-                    <Box display={"flex"}>
-                      <Typography fontSize={"1.25rem"}>{each.temp}</Typography>
-                      <Typography component="span" sx={{ fontSize: "1rem" }}>
-                        °
-                      </Typography>
-                    </Box>
-                  </PrevDataContainer>
-                ))}
-              </TemperatureBox>
+              <FifthBox prevData={prevData} />
             </Box>
+
             <Box
               sx={{
                 flex: 1,
                 margin: "10px",
                 padding: "10px",
                 borderRadius: "20px",
-                backgroundColor: "#2e2e39",
+                backgroundColor: "transparent",
                 color: "white",
+                display: "flex", // set the display to flex
+                alignItems: "center", // vertically align the content in the center
+                justifyContent: "center", // horizontally align the content in the center
               }}
             >
-              right
+              {/* <h1 style={{ margin: 0, padding: 0 }}>SkySight</h1> */}
             </Box>
           </Box>
         </Box>

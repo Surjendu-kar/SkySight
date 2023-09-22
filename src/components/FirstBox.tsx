@@ -81,14 +81,14 @@ function FirstBox({
             />
           </Grid>
 
-          <Grid item xs={3}>
+          <Grid item xs={2.5}>
             <TemperatureContext variant="h5">
               {city ? city : "City not found"}
             </TemperatureContext>
             <Subtitle>{state ? state : "State not found"}</Subtitle>
           </Grid>
 
-          <Grid item xs={2}>
+          <Grid item xs={2.5}>
             <TemperatureContext display={"flex"}>
               +{unit === "C" ? temp : toFahrenheit(Number(temp))}
               <Typography component="span" sx={{ fontSize: "2rem" }}>

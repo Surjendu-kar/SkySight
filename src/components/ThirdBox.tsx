@@ -88,7 +88,7 @@ function ThirdBox({
         padding={"0 1.5rem"}
       >
         <Box>
-          <h1 style={{ margin: 0, padding: 0 }}>Overview</h1>
+          <h2 style={{ margin: 0, padding: 0 }}>Overview</h2>
         </Box>
         <Box>
           <Box sx={{ backgroundColor: "black", borderRadius: "20px" }}>
