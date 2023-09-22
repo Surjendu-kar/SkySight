@@ -22,10 +22,20 @@ const PrevDataContainer = styled(Card)(() => ({
   justifyContent: "center",
   backgroundColor: "#2e2e39",
 }));
-type FirestoreDocument = Record<string, any>;
 
-function FifthBox({ prevData }: FirestoreDocument) {
-  return (
+type FirestoreDocument = {
+    city: string;
+    state: string;
+    temp: number;
+    userval: string;
+  };
+  
+  type FifthBoxProps = {
+    prevData: FirestoreDocument[] | null;
+  };
+
+  function FifthBox({ prevData }: FifthBoxProps) {
+    return (
     <TemperatureBox>
       {prevData?.map((each) => (
         <PrevDataContainer key={uuid()} sx={{ color: "white" }}>

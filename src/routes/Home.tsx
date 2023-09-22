@@ -47,7 +47,13 @@ const FirstCol = styled(Box)(() => ({
   width: "50%",
 }));
 
-type FirestoreDocument = Record<string, any>;
+type FirestoreDocument = {
+  city: string;
+  state: string;
+  temp: number;
+  userval: string;
+};
+
 function Home() {
   const [userVal, setUserVal] = React.useState("");
   const [latitude, setLatitude] = React.useState<number | null>(null);
