@@ -10,7 +10,6 @@ const TemperatureBox = styled(Box)(() => ({
   minWidth: "100%",
   borderRadius: "20px",
 }));
-
 const PrevDataContainer = styled(Card)(() => ({
   minWidth: "7rem",
   height: "4rem",
@@ -23,23 +22,14 @@ const PrevDataContainer = styled(Card)(() => ({
   justifyContent: "center",
   backgroundColor: "#2e2e39",
 }));
+type FirestoreDocument = Record<string, any>;
 
-type DataItem = {
-  city: string;
-  state: string;
-  temp: number;
-  userval?: string; // Include other properties as needed
-};
-
-type FifthBoxProps = {
-  prevData: DataItem[];
-};
-
-function FifthBox({ prevData }: FifthBoxProps) {
+function FifthBox({ prevData }: FirestoreDocument) {
   return (
     <TemperatureBox>
-      {prevData?.map((each: DataItem) => (
+      {prevData?.map((each) => (
         <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
+          {/* <Typography>{each.userval}</Typography> */}
           <Typography fontSize={"1.25rem"}>{each.city}</Typography>
           <Typography fontSize={"0.65rem"}>{each.state}</Typography>
           <Box display={"flex"}>
