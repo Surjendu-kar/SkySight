@@ -42,13 +42,6 @@ const MainContainer = styled(Box)(() => ({
   overflow: "hidden",
 }));
 
-// const TodaysDate = styled(Box)(({ theme }) => ({
-//   fontSize: "1rem",
-//   [theme.breakpoints.up("md")]: {
-//     fontSize: "0.8rem",
-//   },
-// }));
-
 const FirstCol = styled(Box)(({ theme }) => ({
   flex: 2,
   margin: "10px",
@@ -60,6 +53,133 @@ const FirstCol = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     width: "100%",
     // flex: 1,
+  },
+}));
+
+const StyledInput = styled(Input)(({ theme }) => ({
+  background: "#EEEDED",
+  fontSize: "1rem",
+  padding: "0 10px",
+  textAlign: "right",
+  borderRadius: 10,
+  "&:hover": {
+    background: "#DDD",
+  },
+  [theme.breakpoints.down("xl")]: {
+    fontSize: "1rem",
+    padding: "0 10px",
+  },
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "14px",
+    padding: "0 8px",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "12px",
+    padding: "0 7px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "10px",
+    padding: "0 2px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    fontSize: "8px",
+    padding: "0 1px",
+  },
+}));
+
+const StyledSkySight = styled(Typography)(({ theme }) => ({
+  fontFamily: "Roboto",
+  margin: 0,
+  padding: 0,
+  fontSize: "2rem", // default for larger screens
+  [theme.breakpoints.down("xl")]: {
+    fontSize: "2rem",
+  },
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "2rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1.5rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
+  },
+  [theme.breakpoints.down("xs")]: {
+    fontSize: "0.8rem",
+  },
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  fontSize: "1.2rem", // default for larger screens
+  [theme.breakpoints.down("xl")]: {
+    fontSize: "1.2rem",
+  },
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "1rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.7rem",
+  },
+  [theme.breakpoints.down("xs")]: {
+    fontSize: "0.50rem",
+  },
+}));
+
+const StyledAvatar = styled(Avatar)(({ theme }) => ({
+  marginRight: "5px",
+  width: "1.35rem", // default for larger screens
+  height: "1.35rem", // default for larger screens
+  [theme.breakpoints.down("xl")]: {
+    width: "1.35rem",
+    height: "1.35rem",
+  },
+  [theme.breakpoints.down("lg")]: {
+    width: "1rem",
+    height: "1rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    width: "1rem",
+    height: "1rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "0.8rem",
+    height: "0.8rem",
+  },
+  [theme.breakpoints.down("xs")]: {
+    width: "0.50rem",
+    height: "0.50rem",
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  fontSize: "1rem",
+  padding: "0 1rem",
+  borderRadius: "20px",
+  "&:hover": {
+    backgroundColor: "gray",
+  },
+  [theme.breakpoints.down("xl")]: {
+    fontSize: "1rem",
+    padding: "0 1rem",
+  },
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "16px",
+    padding: "2px 10px",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "14px",
+    padding: "2px 2px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "10px",
+    padding: "2px 0px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    fontSize: "8px",
+    padding: "2px 0px",
   },
 }));
 
@@ -266,159 +386,52 @@ function Home() {
         <Navbar>
           <Box sx={{ display: "flex", paddingTop: "0.75rem" }}>
             {/* {user && user.displayName} */}
-            <Avatar
-              alt="Remy Sharp"
-              sx={{
-                width: {
-                  xs: "0.50rem",
-                  sm: "0.8rem",
-                  md: "1rem",
-                  lg: "1rem",
-                  xl: "1.35rem",
-                },
-                height: {
-                  xs: "0.50rem",
-                  sm: "0.8rem",
-                  md: "1rem",
-                  lg: "1rem",
-                  xl: "1.35rem",
-                },
-                marginRight: "5px",
-              }}
-            />
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: {
-                  xs: "0.50rem",
-                  sm: "0.7rem",
-                  md: "1rem",
-                  lg: "1rem",
-                  xl: "1.2rem",
-                },
-              }}
-            >
-              {formattedDate}
-            </Typography>
+            <StyledAvatar alt="Remy Sharp" />
+            <StyledTypography variant="h1">{formattedDate}</StyledTypography>
           </Box>
           <Box sx={{ justifyContent: "center" }}>
-            <Typography
-              variant="h1"
-              sx={{
-                fontFamily: "Roboto",
-                margin: 0,
-                padding: 0,
-                fontSize: {
-                  xs: "1.2rem",
-                  sm: "1.35rem",
-                  md: "1.5rem",
-                  lg: "2rem",
-                  xl: "2rem",
-                },
-              }}
-            >
-              SkySight
-            </Typography>
+            <StyledSkySight variant="h1">SkySight</StyledSkySight>
           </Box>
 
           <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
             <Box>
-              <Input
+              <StyledInput
                 id="search"
                 type="text"
                 placeholder="🔍Search city"
-                sx={{
-                  background: "#EEEDED",
-                  fontSize: {
-                    xs: "8px",
-                    sm: "10px",
-                    md: "14px",
-                    lg: "18px",
-                    xl: "1rem",
-                  },
-                  padding: {
-                    xs: "0 1px",
-                    sm: "0 2px",
-                    md: "0 7px",
-                    lg: "0 8px",
-                    xl: "0 10px",
-                  },
-                  textAlign: "right",
-                  borderRadius: 10,
-                  "&:hover": {
-                    background: "#DDD",
-                  },
-                }}
                 onChange={(e) => setUserVal(e.target.value)}
                 onKeyDown={handleKeyPress}
                 value={userVal}
-                disableUnderline
                 autoComplete="off"
               />
             </Box>
             {/* <Box>lan</Box> */}
 
             {temp && (
-              <Box sx={{paddingRight:'10px'}}>
+              <Box sx={{ paddingRight: "10px" }}>
                 <Box sx={{ borderRadius: "20px", backgroundColor: "black" }}>
-                  <Button
+                  <StyledButton
                     variant="contained"
                     size="small"
                     sx={{
-                      fontSize: {
-                        xs: "8px",
-                        sm: "10px",
-                        md: "14px",
-                        lg: "16px",
-                        xl: "1rem",
-                      },
-                      padding: {
-                        xs: "2px 4px",
-                        sm: "2px 4px",
-                        md: "2px 5px",
-                        lg: "8px 10px",
-                        xl: "0 1rem",
-                      },
                       color: unit === "C" ? "black" : "#c2e9eb",
                       backgroundColor: unit === "C" ? "#c2e9eb" : "black",
-                      borderRadius: "20px",
-                      "&:hover": {
-                        backgroundColor: "gray",
-                      },
                     }}
                     onClick={() => setUnit("C")}
                   >
                     C°
-                  </Button>
-                  <Button
+                  </StyledButton>
+                  <StyledButton
                     variant="contained"
                     size="small"
                     sx={{
-                      fontSize: {
-                        xs: "8px",
-                        sm: "10px",
-                        md: "14px",
-                        lg: "16px",
-                        xl: "1rem",
-                      },
-                      padding: {
-                        xs: "2px 4px",
-                        sm: "2px 4px",
-                        md: "2px 5px",
-                        lg: "8px 10px",
-                        xl: "0 1rem",
-                      },
                       color: unit === "F" ? "black" : "#c2e9eb",
                       backgroundColor: unit === "F" ? "#c2e9eb" : "black",
-                      borderRadius: "20px",
-                      "&:hover": {
-                        backgroundColor: "gray",
-                      },
                     }}
                     onClick={() => setUnit("F")}
                   >
                     F°
-                  </Button>
+                  </StyledButton>
                 </Box>
               </Box>
             )}
