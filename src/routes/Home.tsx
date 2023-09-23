@@ -391,17 +391,43 @@ function Home() {
       <MainContainer>
         {/* navbar */}
         <Navbar>
-          <Box sx={{ display: "flex", paddingTop: "0.75rem" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: "0.75rem",
+            }}
+          >
             {/* {user && user.displayName} */}
             <StyledAvatar alt="Remy Sharp" />
             <StyledTypography variant="h1">{formattedDate}</StyledTypography>
           </Box>
-          <Box sx={{ justifyContent: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <StyledSkySight variant="h1">SkySight</StyledSkySight>
           </Box>
-
-          <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
-            <Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "1rem",
+              paddingTop: "0.5rem",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <StyledInput
                 id="search"
                 type="text"
@@ -413,10 +439,24 @@ function Home() {
               />
             </Box>
             {/* <Box>lan</Box> */}
-
             {temp && (
-              <Box sx={{ paddingRight: "10px" }}>
-                <Box sx={{ borderRadius: "20px", backgroundColor: "black" }}>
+              <Box
+                sx={{
+                  paddingRight: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    borderRadius: "20px",
+                    backgroundColor: "black",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <StyledButton
                     variant="contained"
                     size="small"
