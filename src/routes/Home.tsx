@@ -21,7 +21,7 @@ const Layout = styled(Box)(() => ({
   backgroundColor: "#1e1f24",
 }));
 
-const Navbar = styled(Box)(() => ({
+const Navbar = styled(Box)(({ theme }) => ({
   background: "brown",
   display: "flex",
   justifyContent: "space-between",
@@ -30,6 +30,11 @@ const Navbar = styled(Box)(() => ({
   color: "white",
   padding: "0 10px",
   marginTop: "10px",
+  [theme.breakpoints.down("sm")]: {
+    minHeight: "2vh",
+    padding: "0 5px",
+    marginTop: "5px",
+  },
 }));
 
 const MainContainer = styled(Box)(() => ({
@@ -37,7 +42,14 @@ const MainContainer = styled(Box)(() => ({
   overflow: "hidden",
 }));
 
-const FirstCol = styled(Box)(() => ({
+// const TodaysDate = styled(Box)(({ theme }) => ({
+//   fontSize: "1rem",
+//   [theme.breakpoints.up("md")]: {
+//     fontSize: "0.8rem",
+//   },
+// }));
+
+const FirstCol = styled(Box)(({ theme }) => ({
   flex: 2,
   margin: "10px",
   padding: "10px",
@@ -45,6 +57,10 @@ const FirstCol = styled(Box)(() => ({
   backgroundColor: "#2e2e39",
   color: "white",
   width: "50%",
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    // flex: 1,
+  },
 }));
 
 type FirestoreDocument = {
@@ -219,6 +235,7 @@ function Home() {
   };
 
   useEffect(() => {
+    // here we fetch the prev value
     if (user && typeof user.email === "string") {
       getDocs(collection(projectFirestore, user.email))
         .then((snapshot) => {
@@ -251,12 +268,57 @@ function Home() {
             {/* {user && user.displayName} */}
             <Avatar
               alt="Remy Sharp"
-              sx={{ width: 24, height: 24, marginRight: "5px" }}
+              sx={{
+                width: {
+                  xs: "0.50rem",
+                  sm: "0.8rem",
+                  md: "1rem",
+                  lg: "1rem",
+                  xl: "1.35rem",
+                },
+                height: {
+                  xs: "0.50rem",
+                  sm: "0.8rem",
+                  md: "1rem",
+                  lg: "1rem",
+                  xl: "1.35rem",
+                },
+                marginRight: "5px",
+              }}
             />
-            <Typography fontSize={"1rem"}>{formattedDate}</Typography>
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: {
+                  xs: "0.50rem",
+                  sm: "0.7rem",
+                  md: "1rem",
+                  lg: "1rem",
+                  xl: "1.2rem",
+                },
+              }}
+            >
+              {formattedDate}
+            </Typography>
           </Box>
           <Box sx={{ justifyContent: "center" }}>
-            <h1 style={{ margin: 0, padding: 0 }}>SkySight</h1>
+            <Typography
+              variant="h1"
+              sx={{
+                fontFamily: "Roboto",
+                margin: 0,
+                padding: 0,
+                fontSize: {
+                  xs: "1.2rem",
+                  sm: "1.35rem",
+                  md: "1.5rem",
+                  lg: "2rem",
+                  xl: "2rem",
+                },
+              }}
+            >
+              SkySight
+            </Typography>
           </Box>
 
           <Box sx={{ display: "flex", gap: "1rem", paddingTop: "0.5rem" }}>
@@ -267,9 +329,22 @@ function Home() {
                 placeholder="🔍Search city"
                 sx={{
                   background: "#EEEDED",
+                  fontSize: {
+                    xs: "8px",
+                    sm: "10px",
+                    md: "14px",
+                    lg: "18px",
+                    xl: "1rem",
+                  },
+                  padding: {
+                    xs: "0 1px",
+                    sm: "0 2px",
+                    md: "0 7px",
+                    lg: "0 8px",
+                    xl: "0 10px",
+                  },
                   textAlign: "right",
                   borderRadius: 10,
-                  padding: "0 10px",
                   "&:hover": {
                     background: "#DDD",
                   },
@@ -284,12 +359,26 @@ function Home() {
             {/* <Box>lan</Box> */}
 
             {temp && (
-              <Box>
+              <Box sx={{paddingRight:'10px'}}>
                 <Box sx={{ borderRadius: "20px", backgroundColor: "black" }}>
                   <Button
                     variant="contained"
                     size="small"
                     sx={{
+                      fontSize: {
+                        xs: "8px",
+                        sm: "10px",
+                        md: "14px",
+                        lg: "16px",
+                        xl: "1rem",
+                      },
+                      padding: {
+                        xs: "2px 4px",
+                        sm: "2px 4px",
+                        md: "2px 5px",
+                        lg: "8px 10px",
+                        xl: "0 1rem",
+                      },
                       color: unit === "C" ? "black" : "#c2e9eb",
                       backgroundColor: unit === "C" ? "#c2e9eb" : "black",
                       borderRadius: "20px",
@@ -305,6 +394,20 @@ function Home() {
                     variant="contained"
                     size="small"
                     sx={{
+                      fontSize: {
+                        xs: "8px",
+                        sm: "10px",
+                        md: "14px",
+                        lg: "16px",
+                        xl: "1rem",
+                      },
+                      padding: {
+                        xs: "2px 4px",
+                        sm: "2px 4px",
+                        md: "2px 5px",
+                        lg: "8px 10px",
+                        xl: "0 1rem",
+                      },
                       color: unit === "F" ? "black" : "#c2e9eb",
                       backgroundColor: unit === "F" ? "#c2e9eb" : "black",
                       borderRadius: "20px",
@@ -326,7 +429,7 @@ function Home() {
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {/* row-1 */}
-          <Box sx={{ display: "flex", minHeight: "25vh" }}>
+          <Box sx={{ display: "flex", minHeight: "25vh", height: "auto" }}>
             {/* Box 1 */}
             <FirstCol>
               <FirstBox
