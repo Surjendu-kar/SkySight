@@ -14,11 +14,14 @@ import { v4 as uuid } from "uuid";
 import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
 
-const Layout = styled(Box)(() => ({
+const Layout = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "stretch",
   minHeight: "100vh",
   backgroundColor: "#1e1f24",
+  [theme.breakpoints.down("md")]: {
+    maxHeight: "100",
+  },
 }));
 
 const Navbar = styled(Box)(({ theme }) => ({
