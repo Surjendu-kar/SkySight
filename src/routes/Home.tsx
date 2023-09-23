@@ -311,7 +311,7 @@ function Home() {
                 fontSize: {
                   xs: "1.2rem",
                   sm: "1.35rem",
-                  md: "5rem",
+                  md: "1.5rem",
                   lg: "2rem",
                   xl: "2rem",
                 },
