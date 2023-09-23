@@ -17,7 +17,7 @@ import FifthBox from "../components/FifthBox";
 const Layout = styled(Box)(() => ({
   display: "flex",
   alignItems: "stretch",
-  minHeight: "100vh",
+  height: "calc(var(--vh, 1vh) * 100)",
   backgroundColor: "#1e1f24",
 }));
 
@@ -245,6 +245,13 @@ function Home() {
       return null;
     }
   }, [API]);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--vh",
+      `${window.innerHeight * 0.01}px`
+    );
+  }, []);
 
   useEffect(() => {
     setLatitude(23.3322);
