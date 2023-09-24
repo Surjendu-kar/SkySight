@@ -14,11 +14,15 @@ import { v4 as uuid } from "uuid";
 import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
 
-const Layout = styled(Box)(() => ({
+const Layout = styled(Box)(({ theme }) => ({
   display: "flex",
+  flexDirection:'row',
   alignItems: "stretch",
   minHeight: "100vh",
   backgroundColor: "#1e1f24",
+  [theme.breakpoints.down("sm")]: {
+    flexDirection:'column',
+  },
 }));
 
 const Navbar = styled(Box)(({ theme }) => ({
@@ -664,7 +668,7 @@ function Home() {
                   top: 0,
                   right: 0,
                   bottom: 0,
-                  width: "50%", 
+                  width: "50%",
                   backgroundImage:
                     "linear-gradient(to right, transparent, #1e1f24)",
                 },

@@ -7,7 +7,7 @@ const Container = styled(Box)(({ theme }) => ({
   background: "#2e2e39",
   padding: "1rem",
   borderRadius: "25px",
-  margin: "15px",
+  margin: "1rem",
   fontSize: "1rem",
   [theme.breakpoints.down("md")]: {
     padding: "0.5rem",
