@@ -30,9 +30,9 @@ const Navbar = styled(Box)(({ theme }) => ({
   color: "white",
   padding: "0 10px",
   marginTop: "10px",
-  [theme.breakpoints.down("sm")]: {
+  [theme.breakpoints.down("md")]: {
     minHeight: "2vh",
-    padding: "0 5px",
+    // padding: "0 5px",
     marginTop: "5px",
   },
 }));
