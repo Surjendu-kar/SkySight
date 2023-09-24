@@ -4,9 +4,24 @@ import coldImage from "../images/snow.png";
 import hotImage from "../images/sunny.png";
 import mildImage from "../images/rainy-day.png";
 
-const TemperatureContext = styled(Typography)(() => ({
+const TemperatureContext = styled(Typography)(({ theme }) => ({
   width: "fit-content",
   fontSize: "2rem",
+  [theme.breakpoints.down("xl")]: {
+    fontSize: "2rem",
+  },
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "1.7rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1.5rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
+  },
+  [theme.breakpoints.down("xs")]: {
+    fontSize: "0.8rem",
+  },
 }));
 const Subtitle = styled(Typography)(() => ({
   fontSize: "0.75rem",
