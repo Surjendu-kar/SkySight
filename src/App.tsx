@@ -15,6 +15,7 @@ import LandingPage from "./components/LandingPage";
 function HomeRoute() {
   const { user } = useAuthContext();
   const navigate = useNavigate();
+  console.log(user);
 
   useEffect(() => {
     if (!user) {

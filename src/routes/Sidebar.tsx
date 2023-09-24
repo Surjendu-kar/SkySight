@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 import { Link } from "react-router-dom";
+import { useLogout } from "../hooks/useLogout";
 
 const Container = styled(Box)(({ theme }) => ({
   background: "#2e2e39",
@@ -16,18 +17,34 @@ const Container = styled(Box)(({ theme }) => ({
 }));
 
 function Sidebar() {
+  const { logout } = useLogout();
+
   return (
     <Container>
-      <p className="cursor-pointer">
+      <p>
         <Link to="/home" style={{ textDecoration: "none", color: "white" }}>
           Home
         </Link>
       </p>
-      {/* <p className="cursor-pointer">
-        <Link to="/details" style={{ textDecoration: "none", color: "white" }}>
-          Details
+      <p>
+        <Link to="/login" style={{ textDecoration: "none", color: "white" }}>
+          Login
         </Link>
-      </p> */}
+      </p>
+      <p>
+        <Link to="/signup" style={{ textDecoration: "none", color: "white" }}>
+          Signup
+        </Link>
+      </p>
+      <p
+        onClick={() => {
+          logout();
+        }}
+        style={{ color: "white", cursor: "pointer" }}
+      >
+        Logout
+        {/* </Link> */}
+      </p>
     </Container>
   );
 }

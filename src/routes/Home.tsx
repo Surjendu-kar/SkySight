@@ -17,7 +17,7 @@ import FifthBox from "../components/FifthBox";
 const Layout = styled(Box)(() => ({
   display: "flex",
   alignItems: "stretch",
-  height: "calc(var(--vh, 1vh) * 100)",
+  minHeight: "100vh",
   backgroundColor: "#1e1f24",
 }));
 
@@ -247,13 +247,6 @@ function Home() {
   }, [API]);
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--vh",
-      `${window.innerHeight * 0.01}px`
-    );
-  }, []);
-
-  useEffect(() => {
     setLatitude(23.3322);
     setLongitude(86.3616);
     setCity("Purulia");
@@ -362,6 +355,7 @@ function Home() {
   };
 
   useEffect(() => {
+    setPrevData(null);
     // here we fetch the prev value
     if (user && typeof user.email === "string") {
       getDocs(collection(projectFirestore, user.email))
