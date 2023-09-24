@@ -106,7 +106,7 @@ function FirstBox({
           <Grid item xs={2.5}>
             <TemperatureContext display={"flex"}>
               +{unit === "C" ? temp : toFahrenheit(Number(temp))}
-              <Typography component="span" sx={{ fontSize: "2rem" }}>
+              <Typography component="span" sx={{ fontSize: "1.5rem" }}>
                 °
               </Typography>
             </TemperatureContext>

@@ -390,7 +390,7 @@ function Home() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              paddingTop: "0.75rem",
+              // paddingTop: "0.75rem",
             }}
           >
             {/* {user && user.displayName} */}
@@ -412,7 +412,7 @@ function Home() {
               alignItems: "center",
               justifyContent: "center",
               gap: "1rem",
-              paddingTop: "0.5rem",
+              // paddingTop: "0.5rem",
             }}
           >
             <Box
@@ -664,7 +664,7 @@ function Home() {
                   top: 0,
                   right: 0,
                   bottom: 0,
-                  width: "50%", // you can adjust the width as needed
+                  width: "50%", 
                   backgroundImage:
                     "linear-gradient(to right, transparent, #1e1f24)",
                 },
