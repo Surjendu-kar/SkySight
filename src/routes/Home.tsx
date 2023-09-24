@@ -25,15 +25,15 @@ const Navbar = styled(Box)(({ theme }) => ({
   background: "brown",
   display: "flex",
   justifyContent: "space-between",
-  minHeight: "5vh",
+  maxHeight: "5vh",
   backgroundColor: "#1e1f24",
   color: "white",
   padding: "0 10px",
   marginTop: "10px",
   [theme.breakpoints.down("md")]: {
-    minHeight: "2vh",
+    maxHeight: "2vh",
     // padding: "0 5px",
-    marginTop: "5px",
+    marginTop: "0px",
   },
 }));
 
