@@ -32,7 +32,6 @@ const Navbar = styled(Box)(({ theme }) => ({
   marginTop: "10px",
   [theme.breakpoints.down("md")]: {
     maxHeight: "3vh",
-    marginTop: "5px",
   },
 }));
 
