@@ -6,42 +6,30 @@ import mildImage from "../images/rainy-day.png";
 
 const TemperatureContext = styled(Typography)(({ theme }) => ({
   width: "fit-content",
-  fontSize: "2rem",
-  [theme.breakpoints.down("xl")]: {
-    fontSize: "2rem",
-  },
+  fontSize: "1.8rem",
+
   [theme.breakpoints.down("lg")]: {
-    fontSize: "1.7rem",
+    fontSize: "1.4rem",
   },
   [theme.breakpoints.down("md")]: {
-    fontSize: "1.5rem",
+    fontSize: "0.9rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "1rem",
-  },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "0.8rem",
+    fontSize: "0.7rem",
   },
 }));
-const Subtitle = styled(Typography)(() => ({
+const Subtitle = styled(Typography)(({ theme }) => ({
   fontSize: "0.75rem",
   width: "fit-content",
-}));
-const toFahrenheit = (celsius: number): number => {
-  return Math.round(celsius * 9) / 5 + 32;
-};
-
-const CardContainer = styled(Card)(() => ({
-  minWidth: "50px",
-  height: "100px",
-  padding: "7px",
-  margin: "5px",
-  borderRadius: "25px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#c2e9eb",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "0.55rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "0.45rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.40rem",
+  },
 }));
 
 const TemperatureBox = styled(Box)(() => ({
@@ -51,6 +39,113 @@ const TemperatureBox = styled(Box)(() => ({
   overflowX: "auto",
   minWidth: "100%",
   borderRadius: "20px",
+}));
+
+const toFahrenheit = (celsius: number): number => {
+  return Math.round(celsius * 9) / 5 + 32;
+};
+
+const CardContainer = styled(Card)(({ theme }) => ({
+  minWidth: "3rem",
+  height: "100px",
+  padding: "7px",
+  margin: "5px",
+  borderRadius: "25px",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#c2e9eb",
+  [theme.breakpoints.down("lg")]: {
+    minWidth: "2.5rem",
+    height: "5rem",
+    padding: "7px",
+    margin: "5px",
+    borderRadius: "20px",
+  },
+  [theme.breakpoints.down("md")]: {
+    minWidth: "2rem",
+    height: "3.5rem",
+    padding: "7px",
+    margin: "4px",
+    borderRadius: "18px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    minWidth: "1.5rem",
+    height: "3rem",
+    padding: "7px",
+    margin: "3px",
+    borderRadius: "15px",
+  },
+}));
+
+const TypographyStyle = styled("span")(({ theme }) => ({
+  fontSize: "1.5rem",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "1rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "0.8rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.5rem",
+  },
+}));
+const Img = styled("img")(({ theme }) => ({
+  width: "5rem",
+  height: "5rem",
+  [theme.breakpoints.down("lg")]: {
+    width: "3.5rem",
+    height: "3.5rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    width: "2.5rem",
+    height: "2.5rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "2rem",
+    height: "2rem",
+  },
+}));
+const Time = styled(Typography)(({ theme }) => ({
+  fontSize: "0.75rem",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "0.65rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "0.55rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.45rem",
+  },
+}));
+const TempImg = styled("img")(({ theme }) => ({
+  width: "2rem",
+  height: "2rem",
+  [theme.breakpoints.down("lg")]: {
+    width: "1.5rem",
+    height: "1.5rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    width: "1rem",
+    height: "1rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    width: "0.95rem",
+    height: "0.95rem",
+  },
+}));
+const TempStyle = styled(Typography)(({ theme }) => ({
+  fontSize: "0.95rem",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "0.8rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "0.65rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.55rem",
+  },
 }));
 
 const getWeatherImage = (temperature: number) => {
@@ -89,11 +184,7 @@ function FirstBox({
       <Box height={"50%"}>
         <Grid container spacing={2}>
           <Grid item xs={3} sx={{ textAlign: "center" }}>
-            <img
-              src={mainImage}
-              alt=""
-              style={{ width: "5rem", height: "5rem" }}
-            />
+            <Img src={mainImage} />
           </Grid>
 
           <Grid item xs={2.5}>
@@ -106,9 +197,7 @@ function FirstBox({
           <Grid item xs={2.5}>
             <TemperatureContext display={"flex"}>
               +{unit === "C" ? temp : toFahrenheit(Number(temp))}
-              <Typography component="span" sx={{ fontSize: "1.5rem" }}>
-                °
-              </Typography>
+              <TypographyStyle>°</TypographyStyle>
             </TemperatureContext>
             <Subtitle>Temperature</Subtitle>
           </Grid>
@@ -116,9 +205,7 @@ function FirstBox({
           <Grid item xs={2}>
             <TemperatureContext>
               {humidity && humidity}
-              <Typography component="span" sx={{ fontSize: "1rem" }}>
-                %
-              </Typography>
+              <TypographyStyle>%</TypographyStyle>
             </TemperatureContext>
             <Subtitle>Humidity</Subtitle>
           </Grid>
@@ -126,9 +213,7 @@ function FirstBox({
           <Grid item xs={2}>
             <TemperatureContext>
               {windSpeed && windSpeed}
-              <Typography component="span" sx={{ fontSize: "1rem" }}>
-                km/h
-              </Typography>{" "}
+              <TypographyStyle>km/h</TypographyStyle>{" "}
             </TemperatureContext>
             <Subtitle>Wind Speed</Subtitle>
           </Grid>
@@ -138,19 +223,13 @@ function FirstBox({
         {allTemp.slice(0, 24).map((each, index) => {
           return (
             <CardContainer variant="outlined" key={index}>
-              <Typography sx={{ fontSize: "12px" }}>
+              <Time>
                 {allTime[index] < 12
                   ? `${allTime[index]} am`
                   : `${allTime[index]} pm`}
-              </Typography>
-              <img
-                src={getWeatherImage(each)}
-                alt="Weather Icon"
-                style={{ width: "2rem", height: "2rem" }}
-              />
-              <Typography variant="h6" sx={{ fontSize: "15px" }}>
-                {unit === "C" ? each : toFahrenheit(each)}°
-              </Typography>
+              </Time>
+              <TempImg src={getWeatherImage(each)} alt="Weather Icon" />
+              <TempStyle>{unit === "C" ? each : toFahrenheit(each)}°</TempStyle>
             </CardContainer>
           );
         })}

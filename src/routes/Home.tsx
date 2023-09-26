@@ -4,15 +4,15 @@ import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
-import { Avatar, Box, Input, Typography, Button, styled } from "@mui/material";
+import { Avatar, Box, Input, Typography, styled } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import FirstBox from "../components/FirstBox";
 import SecondBox from "../components/SecondBox";
 import ThirdBox from "../components/ThirdBox";
-import { v4 as uuid } from "uuid";
 
 import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
+import FourthBox from "../components/FourthBox";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -40,7 +40,7 @@ const MainContainer = styled(Box)(() => ({
   overflow: "hidden",
 }));
 
-const FirstCol = styled(Box)(({ theme }) => ({
+const FirstCol = styled(Box)(() => ({
   flex: 2,
   margin: "10px",
   padding: "10px",
@@ -48,10 +48,6 @@ const FirstCol = styled(Box)(({ theme }) => ({
   backgroundColor: "#2e2e39",
   color: "white",
   width: "50%",
-  [theme.breakpoints.down("sm")]: {
-    width: "100%",
-    // flex: 1,
-  },
 }));
 
 const StyledInput = styled(Input)(({ theme }) => ({
@@ -63,10 +59,7 @@ const StyledInput = styled(Input)(({ theme }) => ({
   "&:hover": {
     background: "#DDD",
   },
-  [theme.breakpoints.down("xl")]: {
-    fontSize: "1rem",
-    padding: "0 10px",
-  },
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "14px",
     padding: "0 8px",
@@ -79,10 +72,6 @@ const StyledInput = styled(Input)(({ theme }) => ({
     fontSize: "10px",
     padding: "0 2px",
   },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "8px",
-    padding: "0 1px",
-  },
 }));
 
 const StyledSkySight = styled(Typography)(({ theme }) => ({
@@ -90,51 +79,55 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   margin: 0,
   padding: 0,
   fontSize: "2rem", // default for larger screens
-  [theme.breakpoints.down("xl")]: {
-    fontSize: "2rem",
-  },
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "2rem",
   },
   [theme.breakpoints.down("md")]: {
-    fontSize: "1.5rem",
+    fontSize: "1.4rem",
     margin: "0 10px",
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: "1rem",
   },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "0.8rem",
+}));
+const StyledForeCast = styled(Typography)(({ theme }) => ({
+  fontFamily: "Roboto",
+  margin: 0,
+  padding: 0,
+  fontSize: "1.8rem", // default for larger screens
+
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "1.6rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1.3rem",
+    margin: "0 10px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
   },
 }));
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.2rem", // default for larger screens
-  [theme.breakpoints.down("xl")]: {
-    fontSize: "1.2rem",
-  },
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "1rem",
   },
   [theme.breakpoints.down("md")]: {
-    fontSize: "1rem",
+    fontSize: "0.9rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.7rem",
-  },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "0.50rem",
+    fontSize: "0.6rem",
   },
 }));
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   marginRight: "5px",
-  width: "1.35rem", // default for larger screens
-  height: "1.35rem", // default for larger screens
-  [theme.breakpoints.down("xl")]: {
-    width: "1.35rem",
-    height: "1.35rem",
-  },
+  width: "1.35rem",
+  height: "1.35rem",
+
   [theme.breakpoints.down("lg")]: {
     width: "1rem",
     height: "1rem",
@@ -147,39 +140,51 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
     width: "0.8rem",
     height: "0.8rem",
   },
-  [theme.breakpoints.down("xs")]: {
-    width: "0.50rem",
-    height: "0.50rem",
-  },
 }));
 
 const StyledButton = styled("button")(({ theme }) => ({
   fontSize: "1rem",
   padding: "0.25rem 1.5rem",
   borderRadius: "20px",
-  border: "1px solid black",
+  border: "1px solid transparent",
   "&:hover": {
     backgroundColor: "gray",
   },
-  [theme.breakpoints.down("xl")]: {
-    fontSize: "1rem",
-    padding: "0.25rem 1.5rem",
-  },
+
   [theme.breakpoints.down("lg")]: {
-    fontSize: "16px",
+    fontSize: "0.95rem",
     padding: "0.15rem 1rem",
   },
   [theme.breakpoints.down("md")]: {
-    fontSize: "14px",
+    fontSize: "0.8",
     padding: "0.1rem 0.8rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "10px",
+    fontSize: "0.7rem",
     padding: "2px 0.8rem",
   },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "8px",
-    padding: "1px 0.5rem",
+}));
+
+const ForecastBtn = styled("button")(({ theme }) => ({
+  fontSize: "1rem",
+  padding: "0.4rem 1rem",
+  borderRadius: "20px",
+  border: "1px solid transparent",
+  "&:hover": {
+    backgroundColor: "gray",
+  },
+
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "0.8rem",
+    padding: "0.35rem 0.6rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "0.6rem",
+    padding: "0.30rem 0.3rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.55rem",
+    padding: "0.2rem 0.3rem",
   },
 }));
 
@@ -221,7 +226,7 @@ function Home() {
       const data = await res.json();
       if (res.ok) {
         const currentHourTemp =
-        data.hourly.temperature_2m[new Date().getHours()];
+          data.hourly.temperature_2m[new Date().getHours()];
         setTemp(currentHourTemp);
         setAllTemp(data.hourly.temperature_2m);
         setAllTime(
@@ -372,10 +377,6 @@ function Home() {
     }
   }, [temp, user]);
 
-  const toFahrenheit = (celsius: number): number => {
-    return Math.round(celsius * 9) / 5 + 32;
-  };
-
   return (
     <Layout>
       {/* sidebar */}
@@ -389,7 +390,6 @@ function Home() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              // paddingTop: "0.75rem",
             }}
           >
             {/* {user && user.displayName} */}
@@ -411,7 +411,6 @@ function Home() {
               alignItems: "center",
               justifyContent: "center",
               gap: "1rem",
-              // paddingTop: "0.5rem",
             }}
           >
             <Box
@@ -451,8 +450,6 @@ function Home() {
                   }}
                 >
                   <StyledButton
-                    variant="contained"
-                    size="small"
                     sx={{
                       color: unit === "C" ? "black" : "#c2e9eb",
                       backgroundColor: unit === "C" ? "#c2e9eb" : "black",
@@ -462,8 +459,6 @@ function Home() {
                     C°
                   </StyledButton>
                   <StyledButton
-                    variant="contained"
-                    size="small"
                     sx={{
                       color: unit === "F" ? "black" : "#c2e9eb",
                       backgroundColor: unit === "F" ? "#c2e9eb" : "black",
@@ -482,7 +477,7 @@ function Home() {
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {/* row-1 */}
-          <Box sx={{ display: "flex", minHeight: "38vh", height: "auto" }}>
+          <Box sx={{ display: "flex", minHeight: "35vh", height: "auto" }}>
             {/* Box 1 */}
             <FirstCol>
               <FirstBox
@@ -505,7 +500,7 @@ function Home() {
             />
           </Box>
           {/* row-2 */}
-          <Box sx={{ display: "flex", minHeight: "35vh" }}>
+          <Box sx={{ display: "flex", minHeight: "36vh" }}>
             {/* Box 3 */}
             <FirstCol
               sx={{
@@ -533,114 +528,58 @@ function Home() {
             <Box
               sx={{
                 flex: 1,
-                margin: "10px",
+                margin: "8px",
                 padding: "10px",
                 borderRadius: "20px",
                 backgroundColor: "#2e2e39",
                 color: "white",
               }}
             >
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <h2 style={{ margin: 0, padding: 0 }}>ForeCast</h2>
-                <div className="btn">
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <StyledForeCast>ForeCast</StyledForeCast>
+                <Box>
                   <Box
                     sx={{
                       borderRadius: "20px",
                       backgroundColor: "black",
                     }}
                   >
-                    <Button
-                      className="btn"
-                      size="small"
+                    <ForecastBtn
                       onClick={handleThreeDaysClick}
                       sx={{
                         color: forecastDays === 3 ? "black" : "#c2e9eb",
                         backgroundColor:
                           forecastDays === 3 ? "#c2e9eb" : "black",
-                        borderRadius: "20px",
-                        "&:hover": {
-                          backgroundColor: "gray",
-                        },
                       }}
                     >
                       3 days
-                    </Button>
-                    <Button
-                      className="btn"
-                      size="small"
+                    </ForecastBtn>
+                    <ForecastBtn
                       onClick={handleSixDaysClick}
                       sx={{
                         color: forecastDays === 6 ? "black" : "#c2e9eb",
                         backgroundColor:
                           forecastDays === 6 ? "#c2e9eb" : "black",
-                        border: "1px solid #000",
-                        borderRadius: "20px",
-                        "&:hover": {
-                          backgroundColor: "gray",
-                        },
                       }}
                     >
                       6 days
-                    </Button>
+                    </ForecastBtn>
                   </Box>
-                </div>
+                </Box>
               </Box>
 
               {allTemp && (
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    overflowY: "auto",
-                    maxHeight: "11rem",
-                  }}
-                >
-                  {Array.from({ length: forecastDays }).map((_, dayIndex) => {
-                    // Start from the next day's temperature
-                    const dailyTemps = allTemp.slice(
-                      (dayIndex + 1) * 24,
-                      (dayIndex + 2) * 24
-                    );
-
-                    const maxTemp = Math.max(...dailyTemps);
-                    const minTemp = Math.min(...dailyTemps);
-                    const incrementedDate =
-                      Number(formattedDate.slice(5, 7)) + dayIndex;
-
-                    return (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          borderRadius: 5,
-                          padding: "0.45rem",
-                          margin: "0.25rem",
-                          backgroundColor: "#1e1f24",
-                        }}
-                        key={uuid()}
-                      >
-                        <Typography sx={{ fontSize: "1.5rem" }}>
-                          +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
-                        </Typography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-end", // This will align children to the bottom
-                            flexGrow: 1,
-                          }}
-                        >
-                          <Typography sx={{ fontSize: "1rem" }}>
-                            / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
-                          </Typography>
-                        </Box>
-                        <Typography sx={{ fontSize: "1rem" }}>
-                          Date - {incrementedDate}
-                        </Typography>
-                      </Box>
-                    );
-                  })}
-                </Box>
+                <FourthBox
+                  forecastDays={forecastDays}
+                  allTemp={allTemp}
+                  unit={unit}
+                />
               )}
             </Box>
           </Box>
@@ -654,7 +593,7 @@ function Home() {
                 borderRadius: "20px",
                 backgroundColor: "#1e1f24",
                 width: "50%",
-                position: "relative", // Step 1: Add relative positioning
+                position: "relative",
 
                 // Step 2: Add the ::after pseudo-element
                 "::after": {

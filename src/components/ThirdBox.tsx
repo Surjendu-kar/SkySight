@@ -1,4 +1,5 @@
-import { Box, Button } from "@mui/material";
+import { styled } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 import {
   LineChart,
@@ -16,6 +17,52 @@ type FirstBoxProps = {
   uvIndex: number[];
   allWindSpeed: number[];
 };
+const Heading = styled(Typography)(({ theme }) => ({
+  padding: 0,
+  margin: 0,
+  fontFamily: "Roboto",
+  fontSize: "2rem",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "1.55rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1.2rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
+  },
+}));
+
+const ButtonStyle = styled("button")(({ theme }) => ({
+  backgroundColor: "black",
+  borderRadius: "20px",
+  border: "1px solid transparent",
+  fontSize: "1rem",
+  padding: "6px",
+  [theme.breakpoints.down("lg")]: {
+    fontSize: "0.8rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    fontSize: "0.6rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.4rem",
+    padding: "2px",
+  },
+}));
+
+const MainContainer = styled(Box)(({ theme }) => ({
+  height: "10rem",
+  [theme.breakpoints.down("lg")]: {
+    height: "8rem",
+  },
+  [theme.breakpoints.down("md")]: {
+    height: "6rem",
+  },
+  [theme.breakpoints.down("sm")]: {
+    height: "5rem",
+  },
+}));
 
 type DataKey = "Humidity" | "Uv Index" | "WindSpeed";
 
@@ -42,9 +89,7 @@ function DataButton({
   dataType: DataKey;
 }) {
   return (
-    <Button
-      variant="contained"
-      size="small"
+    <ButtonStyle
       sx={{
         color: active === dataType ? "black" : "#c2e9eb",
         backgroundColor: active === dataType ? "#c2e9eb" : "black",
@@ -54,7 +99,7 @@ function DataButton({
       onClick={() => setActive(dataType)}
     >
       {dataType}
-    </Button>
+    </ButtonStyle>
   );
 }
 
@@ -80,18 +125,24 @@ function ThirdBox({
   );
 
   return (
-    <div>
+    <Box>
       <Box
         display={"flex"}
         justifyContent={"space-between"}
+        alignItems={"center"}
         marginBottom={"1rem"}
         padding={"0 1.5rem"}
       >
         <Box>
-          <h2 style={{ margin: 0, padding: 0 }}>Overview</h2>
+          <Heading>Overview</Heading>
         </Box>
         <Box>
-          <Box sx={{ backgroundColor: "black", borderRadius: "20px" }}>
+          <Box
+            sx={{
+              backgroundColor: "black",
+              borderRadius: "20px",
+            }}
+          >
             <DataButton
               active={activeData}
               setActive={setActiveData}
@@ -110,27 +161,31 @@ function ThirdBox({
           </Box>
         </Box>
       </Box>
-
-      <ResponsiveContainer width="100%" height={160}>
-        <LineChart data={mappedData} margin={{ right: 30, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
-          <XAxis dataKey="time" stroke="white" />
-          <YAxis stroke="white" />
-          <Tooltip
-            wrapperStyle={{ backgroundColor: "#f0f0f0", color: "white" }}
-            contentStyle={{ color: "white" }}
-          />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#c2e9eb"
-            dot={false}
-            activeDot={{ r: 8 }}
-            strokeWidth={3}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+      <MainContainer>
+        <ResponsiveContainer width="100%">
+          <LineChart
+            data={mappedData}
+            margin={{ right: 30, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
+            <XAxis dataKey="time" stroke="white" />
+            <YAxis stroke="white" />
+            <Tooltip
+              wrapperStyle={{ backgroundColor: "#f0f0f0", color: "white" }}
+              contentStyle={{ color: "white" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#c2e9eb"
+              dot={false}
+              activeDot={{ r: 8 }}
+              strokeWidth={3}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </MainContainer>
+    </Box>
   );
 }
 
