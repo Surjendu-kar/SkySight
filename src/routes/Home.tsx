@@ -500,7 +500,7 @@ function Home() {
             />
           </Box>
           {/* row-2 */}
-          <Box sx={{ display: "flex", minHeight: "20vh" }}>
+          <Box sx={{ display: "flex", minHeight: "10vh" }}>
             {/* Box 3 */}
             <FirstCol
               sx={{
