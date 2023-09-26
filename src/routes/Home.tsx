@@ -157,7 +157,7 @@ const StyledButton = styled("button")(({ theme }) => ({
   fontSize: "1rem",
   padding: "0.25rem 1.5rem",
   borderRadius: "20px",
-  border:"1px solid black",
+  border: "1px solid black",
   "&:hover": {
     backgroundColor: "gray",
   },
@@ -220,9 +220,8 @@ function Home() {
       const res = await fetch(API);
       const data = await res.json();
       if (res.ok) {
-        // console.log("data", data);
         const currentHourTemp =
-          data.hourly.temperature_2m[new Date().getHours()];
+        data.hourly.temperature_2m[new Date().getHours()];
         setTemp(currentHourTemp);
         setAllTemp(data.hourly.temperature_2m);
         setAllTime(
