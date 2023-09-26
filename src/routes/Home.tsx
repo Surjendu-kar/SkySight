@@ -98,6 +98,7 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   },
   [theme.breakpoints.down("md")]: {
     fontSize: "1.5rem",
+    margin: "0 10px",
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: "1rem",
@@ -152,32 +153,33 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   },
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled("button")(({ theme }) => ({
   fontSize: "1rem",
-  padding: "0 1rem",
+  padding: "0.25rem 1.5rem",
   borderRadius: "20px",
+  border:"1px solid black",
   "&:hover": {
     backgroundColor: "gray",
   },
   [theme.breakpoints.down("xl")]: {
     fontSize: "1rem",
-    padding: "0 1rem",
+    padding: "0.25rem 1.5rem",
   },
   [theme.breakpoints.down("lg")]: {
     fontSize: "16px",
-    padding: "2px 10px",
+    padding: "0.15rem 1rem",
   },
   [theme.breakpoints.down("md")]: {
     fontSize: "14px",
-    padding: "2px 2px",
+    padding: "0.1rem 0.8rem",
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: "10px",
-    padding: "2px 0px",
+    padding: "2px 0.8rem",
   },
   [theme.breakpoints.down("xs")]: {
     fontSize: "8px",
-    padding: "2px 0px",
+    padding: "1px 0.5rem",
   },
 }));
 
@@ -481,7 +483,7 @@ function Home() {
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {/* row-1 */}
-          <Box sx={{ display: "flex", maxHeight: "38vh", height: "auto" }}>
+          <Box sx={{ display: "flex", minHeight: "38vh", height: "auto" }}>
             {/* Box 1 */}
             <FirstCol>
               <FirstBox
@@ -504,7 +506,7 @@ function Home() {
             />
           </Box>
           {/* row-2 */}
-          <Box sx={{ display: "flex", maxHeight: "38vh" }}>
+          <Box sx={{ display: "flex", minHeight: "35vh" }}>
             {/* Box 3 */}
             <FirstCol
               sx={{
