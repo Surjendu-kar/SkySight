@@ -477,7 +477,7 @@ function Home() {
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {/* row-1 */}
-          <Box sx={{ display: "flex", minHeight: "35vh", height: "auto" }}>
+          <Box sx={{ display: "flex", minHeight: "20vh", height: "auto" }}>
             {/* Box 1 */}
             <FirstCol>
               <FirstBox
@@ -500,7 +500,7 @@ function Home() {
             />
           </Box>
           {/* row-2 */}
-          <Box sx={{ display: "flex", minHeight: "36vh" }}>
+          <Box sx={{ display: "flex", minHeight: "20vh" }}>
             {/* Box 3 */}
             <FirstCol
               sx={{
