@@ -151,7 +151,7 @@ const TempStyle = styled(Typography)(({ theme }) => ({
 const getWeatherImage = (temperature: number) => {
   if (temperature < 10) {
     return coldImage;
-  } else if (temperature >= 10 && temperature <= 25) {
+  } else if (temperature >= 10 && temperature <= 26) {
     return mildImage;
   } else {
     return hotImage;

@@ -286,9 +286,16 @@ function Home() {
     month: "short",
   })}, ${dt.getFullYear()}`;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (latitude !== null && longitude !== null) {
       fetchApi();
+    } else {
+      // if (navigator.geolocation) {
+      //   navigator.geolocation.getCurrentPosition((position) => {
+      //     console.log(position.coords.latitude);
+      //     console.log(position.coords.longitude);
+      //   });
+      // }
     }
   }, [latitude, longitude, fetchApi]);
 
