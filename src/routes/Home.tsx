@@ -290,12 +290,12 @@ function Home() {
     if (latitude !== null && longitude !== null) {
       fetchApi();
     } else {
-      // if (navigator.geolocation) {
-      //   navigator.geolocation.getCurrentPosition((position) => {
-      //     console.log(position.coords.latitude);
-      //     console.log(position.coords.longitude);
-      //   });
-      // }
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          console.log(position.coords.latitude);
+          console.log(position.coords.longitude);
+        });
+      }
     }
   }, [latitude, longitude, fetchApi]);
 

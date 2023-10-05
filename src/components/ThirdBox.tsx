@@ -29,7 +29,8 @@ const Heading = styled(Typography)(({ theme }) => ({
     fontSize: "1.2rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "1rem",
+    fontSize: "0.9rem",
+    margin: "0 0.5rem 0 0",
   },
 }));
 
@@ -61,6 +62,18 @@ const MainContainer = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.down("sm")]: {
     height: "5rem",
+  },
+}));
+
+const BoxContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "1rem",
+  padding: "0 0.7rem",
+  // [theme.breakpoints.down("md")]: {},
+  [theme.breakpoints.down("sm")]: {
+    padding: "0 0.25rem",
   },
 }));
 
@@ -126,20 +139,13 @@ function ThirdBox({
 
   return (
     <Box>
-      <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        marginBottom={"1rem"}
-        padding={"0 1.5rem"}
-      >
+      <BoxContainer>
         <Box>
           <Heading>Overview</Heading>
         </Box>
         <Box>
           <Box
             sx={{
-              backgroundColor: "black",
               borderRadius: "20px",
             }}
           >
@@ -160,12 +166,12 @@ function ThirdBox({
             />
           </Box>
         </Box>
-      </Box>
+      </BoxContainer>
       <MainContainer>
         <ResponsiveContainer width="100%">
           <LineChart
             data={mappedData}
-            margin={{ right: 30, left: 0, bottom: 0 }}
+            margin={{ top: 0, right: 10, left: -20, bottom: 0 }} 
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
             <XAxis dataKey="time" stroke="white" />
@@ -180,7 +186,7 @@ function ThirdBox({
               stroke="#c2e9eb"
               dot={false}
               activeDot={{ r: 8 }}
-              strokeWidth={3}
+              strokeWidth={2}
             />
           </LineChart>
         </ResponsiveContainer>
