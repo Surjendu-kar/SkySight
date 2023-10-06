@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Box, styled } from "@mui/material";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+
 const Map = styled(Box)(() => ({
   flex: 1,
   margin: "10px",
   padding: "10px",
   backgroundColor: "transparent",
   color: "white",
+  minHeight: '13.5rem',
 }));
 
 type FirstBoxProps = {

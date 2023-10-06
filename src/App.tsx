@@ -13,15 +13,14 @@ import {
 import LandingPage from "./components/LandingPage";
 
 function HomeRoute() {
-  const { user } = useAuthContext();
+  const { user, authIsReady } = useAuthContext();
   const navigate = useNavigate();
-  console.log(user);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/");
+    if (authIsReady && !user) {
+      navigate("/", { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, authIsReady, navigate]);
 
   if (!user) return null;
   return <RouteWrapper Component={Home} />;
@@ -33,7 +32,7 @@ function LoginRoute() {
 
   useEffect(() => {
     if (user) {
-      navigate("/home");
+      navigate("/home", { replace: true });
     }
   }, [user, navigate]);
 
@@ -96,7 +95,7 @@ export const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <div>
+    <div style={{ maxWidth: 1920, margin: '0 auto' }}>
       <RouterProvider router={router} />
     </div>
   );

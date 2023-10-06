@@ -40,6 +40,9 @@ const ButtonStyle = styled("button")(({ theme }) => ({
   border: "1px solid transparent",
   fontSize: "1rem",
   padding: "6px",
+  cursor: 'pointer',
+  transition: 'all 0.2s ease-in-out',
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "0.8rem",
   },
@@ -148,6 +151,8 @@ function ThirdBox({
             sx={{
               borderRadius: "20px",
             }}
+            display='flex'
+            gap={.5}
           >
             <DataButton
               active={activeData}
@@ -171,14 +176,18 @@ function ThirdBox({
         <ResponsiveContainer width="100%">
           <LineChart
             data={mappedData}
-            margin={{ top: 0, right: 10, left: -20, bottom: 0 }} 
+            margin={{ top: 0, right: 10, left: -20, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
             <XAxis dataKey="time" stroke="white" />
             <YAxis stroke="white" />
             <Tooltip
-              wrapperStyle={{ backgroundColor: "#f0f0f0", color: "white" }}
-              contentStyle={{ color: "white" }}
+              contentStyle={{
+                background: "rgba(0,0,0,.7)",
+                color: "#fff",
+                border: 'none',
+                borderRadius: 10
+              }}
             />
             <Line
               type="monotone"
