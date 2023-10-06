@@ -1,13 +1,18 @@
 import { Box, Typography, styled } from "@mui/material";
+import { useEffect, useRef } from "react";
 
 import { v4 as uuid } from "uuid";
+import moment from "moment";
 
-const dt = new Date();
-const formattedDate = `${dt.toLocaleDateString("en-US", {
-  weekday: "short",
-})}, ${dt.getDate()} ${dt.toLocaleDateString("en-US", {
-  month: "short",
-})}, ${dt.getFullYear()}`;
+const getNextNDaysFormatted = (n: number) => {
+  const dates = [];
+  for (let i = 0; i <= n; i++) {
+    const date = moment().add(i, "days");
+    const formattedDate = date.format("ddd, Do MMM");
+    dates.push(formattedDate);
+  }
+  return dates;
+};
 
 const toFahrenheit = (celsius: number): number => {
   return Math.round(celsius * 9) / 5 + 32;
@@ -17,6 +22,7 @@ type FourthBoxProps = {
   forecastDays: number;
   allTemp: number[];
   unit: "C" | "F";
+  forCastBoxRef: React.RefObject<HTMLDivElement>;
 };
 
 const Maxtemp = styled(Typography)(({ theme }) => ({
@@ -47,8 +53,10 @@ const Mintemp = styled(Typography)(({ theme }) => ({
 
 const MainContainer = styled(Box)(({ theme }) => ({
   display: "flex",
+  alignItems: "center",
+
   borderRadius: "20px",
-  padding: "0.45rem",
+  padding: "0.45rem 1rem",
   margin: "0.25rem",
   backgroundColor: "#1e1f24",
   [theme.breakpoints.down("lg")]: {
@@ -67,7 +75,24 @@ const MainContainer = styled(Box)(({ theme }) => ({
 
 const DateBox = styled(Mintemp)(() => ({}));
 
-function FourthBox({ forecastDays, allTemp, unit }: FourthBoxProps) {
+function FourthBox({
+  forecastDays,
+  allTemp,
+  unit,
+  forCastBoxRef,
+}: FourthBoxProps) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (forecastDays === 6) {
+        if (ref?.current) {
+          ref.current.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    }, 500);
+  }, [forecastDays]);
+
   return (
     <Box
       sx={{
@@ -79,7 +104,7 @@ function FourthBox({ forecastDays, allTemp, unit }: FourthBoxProps) {
       }}
     >
       {Array.from({ length: forecastDays }).map((_, dayIndex) => {
-        // Start from the next day's temperature
+        const days = getNextNDaysFormatted(forecastDays);
         const dailyTemps = allTemp.slice(
           (dayIndex + 1) * 24,
           (dayIndex + 2) * 24
@@ -87,10 +112,20 @@ function FourthBox({ forecastDays, allTemp, unit }: FourthBoxProps) {
 
         const maxTemp = Math.max(...dailyTemps);
         const minTemp = Math.min(...dailyTemps);
-        const incrementedDate = Number(formattedDate.slice(5, 7)) + dayIndex;
+
+        // assign ref to 1st and 4th day
+        let finalRef: React.RefObject<HTMLDivElement> | null = null;
+        if (dayIndex === 3) {
+          finalRef = ref;
+        } else if (dayIndex === 0) {
+          finalRef = forCastBoxRef;
+        }
 
         return (
-          <MainContainer key={uuid()}>
+          <MainContainer
+            key={uuid()}
+            ref={finalRef}
+          >
             <Maxtemp>
               +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
             </Maxtemp>
@@ -106,9 +141,7 @@ function FourthBox({ forecastDays, allTemp, unit }: FourthBoxProps) {
                 / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
               </Mintemp>
             </Box>
-            <DateBox sx={{ fontSize: "1rem" }}>
-              Date - {incrementedDate}
-            </DateBox>
+            <DateBox sx={{ fontSize: "1rem" }}>{days[dayIndex]}</DateBox>
           </MainContainer>
         );
       })}

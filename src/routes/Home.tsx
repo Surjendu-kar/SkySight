@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
-import { Avatar, Box, Input, Typography, styled } from "@mui/material";
+import { Avatar, Box, Input, Skeleton, Typography, styled } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import FirstBox from "../components/FirstBox";
 import SecondBox from "../components/SecondBox";
@@ -55,9 +55,17 @@ const StyledInput = styled(Input)(({ theme }) => ({
   fontSize: "1rem",
   padding: "0 10px",
   textAlign: "right",
-  borderRadius: 10,
-  "&:hover": {
-    background: "#DDD",
+  borderTopRightRadius: "20px",
+  borderBottomRightRadius: "20px",
+  height: 35,
+
+  // add before 
+  "&::before": {
+    borderBottom: "none !important",
+  },
+
+  "&::after": {
+    borderBottom: "none !important",
   },
 
   [theme.breakpoints.down("lg")]: {
@@ -79,6 +87,7 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   margin: 0,
   padding: 0,
   fontSize: "2rem", // default for larger screens
+  letterSpacing: "0.15rem",
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "2rem",
@@ -147,6 +156,10 @@ const StyledButton = styled("button")(({ theme }) => ({
   padding: "0.25rem 1.5rem",
   borderRadius: "20px",
   border: "1px solid transparent",
+  cursor: "pointer",
+  transition: "all 0.2s ease-in-out",
+
+
   "&:hover": {
     backgroundColor: "gray",
   },
@@ -170,6 +183,9 @@ const ForecastBtn = styled("button")(({ theme }) => ({
   padding: "0.4rem 1rem",
   borderRadius: "20px",
   border: "1px solid transparent",
+  cursor: "pointer",
+  transition: "all 0.2s ease-in-out",
+
   "&:hover": {
     backgroundColor: "gray",
   },
@@ -203,6 +219,7 @@ function Home() {
   const [state, setState] = React.useState<string | null>(null);
   const [temp, setTemp] = React.useState<string | null>(null);
   const [allTemp, setAllTemp] = React.useState<number[]>([]);
+  const [isAllTempLoading, setIsAllTempLoading] = React.useState(false);
   const [allTime, setAllTime] = React.useState<number[]>([]);
   const [humidity, setHumidity] = React.useState<string | null>(null);
   const [allHumidity, setAllHumidity] = React.useState<number[] | null>(null);
@@ -215,12 +232,14 @@ function Home() {
   const [uvIndex, setUvIndex] = React.useState<number[]>([]);
   const [unit, setUnit] = React.useState<"C" | "F">("C");
   const { user } = useAuthContext();
+  const forCastBoxRef = React.useRef<HTMLDivElement>(null);
 
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
   const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
 
   const fetchApi = useCallback(async () => {
+    setIsAllTempLoading(true);
     try {
       const res = await fetch(API);
       const data = await res.json();
@@ -247,6 +266,8 @@ function Home() {
     } catch (error) {
       console.log(error);
       return null;
+    } finally {
+      setIsAllTempLoading(false);
     }
   }, [API]);
 
@@ -300,7 +321,13 @@ function Home() {
   }, [latitude, longitude, fetchApi]);
 
   const handleThreeDaysClick = () => {
-    setForecastDays(3);
+    setTimeout(() => {
+      setForecastDays(3);
+    }, 300);
+
+    if (forCastBoxRef?.current) {
+      forCastBoxRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSixDaysClick = () => {
@@ -410,7 +437,7 @@ function Home() {
               justifyContent: "center",
             }}
           >
-            <StyledSkySight variant="h1">SkySight</StyledSkySight>
+            <StyledSkySight variant="h1">Sky Sight</StyledSkySight>
           </Box>
           <Box
             sx={{
@@ -427,10 +454,19 @@ function Home() {
                 justifyContent: "center",
               }}
             >
+              <Box bgcolor='#EEEDED' height={35} pl={1} sx={{
+                borderTopLeftRadius: "20px",
+                borderBottomLeftRadius: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                🔍
+              </Box>
               <StyledInput
                 id="search"
                 type="text"
-                placeholder="🔍Search city"
+                placeholder="Search city"
                 onChange={(e) => setUserVal(e.target.value)}
                 onKeyDown={handleKeyPress}
                 value={userVal}
@@ -438,45 +474,43 @@ function Home() {
               />
             </Box>
             {/* <Box>lan</Box> */}
-            {temp && (
+            <Box
+              sx={{
+                paddingRight: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Box
                 sx={{
-                  paddingRight: "10px",
+                  borderRadius: "20px",
+                  backgroundColor: "black",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Box
+                <StyledButton
                   sx={{
-                    borderRadius: "20px",
-                    backgroundColor: "black",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                    color: unit === "C" ? "black" : "#c2e9eb",
+                    backgroundColor: unit === "C" ? "#c2e9eb" : "black",
                   }}
+                  onClick={() => setUnit("C")}
                 >
-                  <StyledButton
-                    sx={{
-                      color: unit === "C" ? "black" : "#c2e9eb",
-                      backgroundColor: unit === "C" ? "#c2e9eb" : "black",
-                    }}
-                    onClick={() => setUnit("C")}
-                  >
-                    C°
-                  </StyledButton>
-                  <StyledButton
-                    sx={{
-                      color: unit === "F" ? "black" : "#c2e9eb",
-                      backgroundColor: unit === "F" ? "#c2e9eb" : "black",
-                    }}
-                    onClick={() => setUnit("F")}
-                  >
-                    F°
-                  </StyledButton>
-                </Box>
+                  C°
+                </StyledButton>
+                <StyledButton
+                  sx={{
+                    color: unit === "F" ? "black" : "#c2e9eb",
+                    backgroundColor: unit === "F" ? "#c2e9eb" : "black",
+                  }}
+                  onClick={() => setUnit("F")}
+                >
+                  F°
+                </StyledButton>
               </Box>
-            )}
+            </Box>
           </Box>
         </Navbar>
 
@@ -581,11 +615,27 @@ function Home() {
                 </Box>
               </Box>
 
-              {allTemp && (
+
+              {isAllTempLoading && (
+                <Box display='flex' flexDirection='column' gap={1}>
+                  <Skeleton variant="rounded" width='100%' height={47} sx={{
+                    borderRadius: 10
+                  }} />
+                  <Skeleton variant="rounded" width='100%' height={47} sx={{
+                    borderRadius: 10
+                  }} />
+                  <Skeleton variant="rounded" width='100%' height={47} sx={{
+                    borderRadius: 10
+                  }} />
+                </Box>
+              )}
+
+              {(!isAllTempLoading && allTemp) && (
                 <FourthBox
                   forecastDays={forecastDays}
                   allTemp={allTemp}
                   unit={unit}
+                  forCastBoxRef={forCastBoxRef}
                 />
               )}
             </Box>

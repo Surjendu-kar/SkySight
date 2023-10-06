@@ -26,24 +26,11 @@ function Sidebar() {
           Home
         </Link>
       </p>
-      <p>
-        <Link to="/login" style={{ textDecoration: "none", color: "white" }}>
-          Login
-        </Link>
-      </p>
-      <p>
-        <Link to="/signup" style={{ textDecoration: "none", color: "white" }}>
-          Signup
-        </Link>
-      </p>
       <p
-        onClick={() => {
-          logout();
-        }}
+        onClick={logout}
         style={{ color: "white", cursor: "pointer" }}
       >
         Logout
-        {/* </Link> */}
       </p>
     </Container>
   );
