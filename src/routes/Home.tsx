@@ -4,7 +4,14 @@ import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
-import { Avatar, Box, Input, Skeleton, Typography, styled } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Input,
+  Skeleton,
+  Typography,
+  styled,
+} from "@mui/material";
 import "leaflet/dist/leaflet.css";
 import FirstBox from "../components/FirstBox";
 import SecondBox from "../components/SecondBox";
@@ -59,7 +66,7 @@ const StyledInput = styled(Input)(({ theme }) => ({
   borderBottomRightRadius: "20px",
   height: 35,
 
-  // add before 
+  // add before
   "&::before": {
     borderBottom: "none !important",
   },
@@ -158,7 +165,6 @@ const StyledButton = styled("button")(({ theme }) => ({
   border: "1px solid transparent",
   cursor: "pointer",
   transition: "all 0.2s ease-in-out",
-
 
   "&:hover": {
     backgroundColor: "gray",
@@ -454,13 +460,18 @@ function Home() {
                 justifyContent: "center",
               }}
             >
-              <Box bgcolor='#EEEDED' height={35} pl={1} sx={{
-                borderTopLeftRadius: "20px",
-                borderBottomLeftRadius: "20px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
+              <Box
+                bgcolor="#EEEDED"
+                height={35}
+                pl={1}
+                sx={{
+                  borderTopLeftRadius: "20px",
+                  borderBottomLeftRadius: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 🔍
               </Box>
               <StyledInput
@@ -615,22 +626,36 @@ function Home() {
                 </Box>
               </Box>
 
-
               {isAllTempLoading && (
-                <Box display='flex' flexDirection='column' gap={1}>
-                  <Skeleton variant="rounded" width='100%' height={47} sx={{
-                    borderRadius: 10
-                  }} />
-                  <Skeleton variant="rounded" width='100%' height={47} sx={{
-                    borderRadius: 10
-                  }} />
-                  <Skeleton variant="rounded" width='100%' height={47} sx={{
-                    borderRadius: 10
-                  }} />
+                <Box display="flex" flexDirection="column" gap={1}>
+                  <Skeleton
+                    variant="rounded"
+                    width="100%"
+                    height={47}
+                    sx={{
+                      borderRadius: 10,
+                    }}
+                  />
+                  <Skeleton
+                    variant="rounded"
+                    width="100%"
+                    height={47}
+                    sx={{
+                      borderRadius: 10,
+                    }}
+                  />
+                  <Skeleton
+                    variant="rounded"
+                    width="100%"
+                    height={47}
+                    sx={{
+                      borderRadius: 10,
+                    }}
+                  />
                 </Box>
               )}
 
-              {(!isAllTempLoading && allTemp) && (
+              {!isAllTempLoading && allTemp && (
                 <FourthBox
                   forecastDays={forecastDays}
                   allTemp={allTemp}
