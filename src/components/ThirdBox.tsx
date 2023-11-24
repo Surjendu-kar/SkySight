@@ -38,8 +38,8 @@ const ButtonStyle = styled("button")(({ theme }) => ({
   backgroundColor: "black",
   borderRadius: "20px",
   border: "1px solid transparent",
-  fontSize: "1rem",
-  padding: "6px",
+  fontSize: "0.9rem",
+  padding: "8px",
   cursor: 'pointer',
   transition: 'all 0.2s ease-in-out',
 

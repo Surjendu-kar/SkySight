@@ -67,7 +67,7 @@ function Login() {
   };
   return (
     <Form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+      <h2 style={{ textAlign: "center" }}>Login</h2>
       <Label>
         <span>Email:</span>
         <input
@@ -103,3 +103,135 @@ function Login() {
 }
 
 export default Login;
+
+// import * as React from "react";
+// import Avatar from "@mui/material/Avatar";
+// import CssBaseline from "@mui/material/CssBaseline";
+// import TextField from "@mui/material/TextField";
+// import Link from "@mui/material/Link";
+// import Grid from "@mui/material/Grid";
+// import Box from "@mui/material/Box";
+// import Typography from "@mui/material/Typography";
+// import Container from "@mui/material/Container";
+// import { useState } from "react";
+// import { useLogin } from "../hooks/useLogin";
+// import { InputAdornment, IconButton } from "@material-ui/core";
+// import Visibility from "@material-ui/icons/Visibility";
+// import VisibilityOff from "@material-ui/icons/VisibilityOff";
+// import { Button } from "@mui/material";
+
+// export default function SignIn() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [showPassword, setShowPassword] = React.useState(false);
+//   const { login, isPending, error } = useLogin();
+
+//   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     login(email, password);
+//   };
+
+//   return (
+//     <Container component="main" maxWidth="xs">
+//       <CssBaseline />
+//       <Box
+//         sx={{
+//           marginTop: 8,
+//           display: "flex",
+//           flexDirection: "column",
+//           alignItems: "center",
+//         }}
+//       >
+//         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+//           {/* <LockOutlinedIcon /> */}
+//         </Avatar>
+//         <Typography component="h1" variant="h5">
+//           Login
+//         </Typography>
+//         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+//           <TextField
+//             margin="normal"
+//             required
+//             fullWidth
+//             id="email"
+//             label="Email Address"
+//             name="email"
+//             onChange={(e) => setEmail(e.target.value)}
+//             value={email}
+//             autoComplete="email"
+//             autoFocus
+//           />
+//           <TextField
+//             margin="normal"
+//             required
+//             fullWidth
+//             name="password"
+//             label="Password"
+//             type={showPassword ? "text" : "password"}
+//             id="password"
+//             onChange={(e) => setPassword(e.target.value)}
+//             value={password}
+//             autoComplete="current-password"
+//             InputProps={{
+//               endAdornment: (
+//                 <InputAdornment position="end">
+//                   <IconButton
+//                     size="small"
+//                     aria-label="toggle password visibility"
+//                     onClick={() => setShowPassword(!showPassword)}
+//                   >
+//                     {showPassword ? <Visibility /> : <VisibilityOff />}
+//                   </IconButton>
+//                 </InputAdornment>
+//               ),
+//             }}
+//           />
+
+//           {/* <FormControlLabel
+//               control={<Checkbox value="remember" color="primary" />}
+//               label="Remember me"
+//             /> */}
+//           <Grid container>
+//             <Grid item xs>
+//               {/* <Link href="#" variant="body2">
+//                   Forgot password?
+//                 </Link> */}
+//             </Grid>
+//             <Grid item>
+//               <Link href="/signup" variant="body2">
+//                 {"Don't have an account? Sign Up"}
+//               </Link>
+//             </Grid>
+//           </Grid>
+
+//           <Box>
+//             {!isPending ? (
+//               <Button
+//                 type="submit"
+//                 fullWidth
+//                 variant="contained"
+//                 sx={{
+//                   mt: 3,
+//                   mb: 2,
+//                 }}
+//               >
+//                 Login
+//               </Button>
+//             ) : (
+//               <Button
+//                 type="submit"
+//                 fullWidth
+//                 variant="contained"
+//                 sx={{ mt: 3, mb: 2 }}
+//               >
+//                 Loading ...
+//               </Button>
+//             )}
+//           </Box>
+
+//           {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
+//         </Box>
+//       </Box>
+//     </Container>
+//   );
+// }

@@ -20,6 +20,7 @@ import ThirdBox from "../components/ThirdBox";
 import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
 import FourthBox from "../components/FourthBox";
+// import { Translation } from "react-i18next";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -237,12 +238,12 @@ function Home() {
   );
   const [uvIndex, setUvIndex] = React.useState<number[]>([]);
   const [unit, setUnit] = React.useState<"C" | "F">("C");
-  const { user } = useAuthContext();
   const forCastBoxRef = React.useRef<HTMLDivElement>(null);
 
   const key = import.meta.env.VITE_NASA_API_KEY;
   const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
   const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
+  const { user } = useAuthContext();
 
   const fetchApi = useCallback(async () => {
     setIsAllTempLoading(true);
@@ -290,6 +291,7 @@ function Home() {
       const res = await fetch(cityApi);
       const data = await res.json();
       if (res.ok && data[0]) {
+        setUserVal("");
         setLatitude(data[0].lat);
         setLongitude(data[0].lon);
         setCity(data[0].name);
@@ -484,7 +486,9 @@ function Home() {
                 autoComplete="off"
               />
             </Box>
-            {/* <Box>lan</Box> */}
+            {/* <Box >lan</Box> */}
+            {/* <Translation>{(t) => <ChangeLang t={t} />}</Translation> */}
+
             <Box
               sx={{
                 paddingRight: "10px",

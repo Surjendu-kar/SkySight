@@ -60,7 +60,7 @@ function SignUp() {
     e.preventDefault();
 
     if (!email || !password || !displayName) {
-      alert('Please fill all the fields');
+      alert("Please fill all the fields");
       return;
     }
 
@@ -70,7 +70,7 @@ function SignUp() {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <h2>SignUp</h2>
+      <h2 style={{ textAlign: "center" }}>SignUp</h2>
 
       <Label>
         <span>Email:</span>

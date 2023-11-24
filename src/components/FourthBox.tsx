@@ -106,8 +106,8 @@ function FourthBox({
       {Array.from({ length: forecastDays }).map((_, dayIndex) => {
         const days = getNextNDaysFormatted(forecastDays);
         const dailyTemps = allTemp.slice(
-          (dayIndex + 1) * 24,
-          (dayIndex + 2) * 24
+          (dayIndex + 0) * 24,
+          (dayIndex + 1) * 24
         );
 
         const maxTemp = Math.max(...dailyTemps);

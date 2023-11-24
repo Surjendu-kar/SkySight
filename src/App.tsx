@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <div style={{ maxWidth: 1920, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1920, margin: "0 auto" }}>
       <RouterProvider router={router} />
     </div>
   );

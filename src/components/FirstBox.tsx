@@ -85,7 +85,7 @@ const TypographyStyle = styled("span")(({ theme }) => ({
     fontSize: "1rem",
   },
   [theme.breakpoints.down("md")]: {
-    fontSize: "3.8rem",
+    fontSize: "0.8rem",
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: "0.5rem",
