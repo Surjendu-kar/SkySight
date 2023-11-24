@@ -2,7 +2,7 @@ import { Box, Card, Grid, Typography, styled } from "@mui/material";
 import mainImage from "../images/fog.png";
 import coldImage from "../images/snow.png";
 import hotImage from "../images/sunny.png";
-import mildImage from "../images/rainy-day.png";
+import mildImage from "../images/cloud1.png";
 
 const TemperatureContext = styled(Typography)(({ theme }) => ({
   width: "fit-content",
@@ -149,9 +149,9 @@ const TempStyle = styled(Typography)(({ theme }) => ({
 }));
 
 const getWeatherImage = (temperature: number) => {
-  if (temperature < 10) {
+  if (temperature < 20) {
     return coldImage;
-  } else if (temperature >= 10 && temperature <= 26) {
+  } else if (temperature >= 20 && temperature <= 26) {
     return mildImage;
   } else {
     return hotImage;
