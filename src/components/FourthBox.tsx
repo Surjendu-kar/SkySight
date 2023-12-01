@@ -127,7 +127,7 @@ function FourthBox({
             ref={finalRef}
           >
             <Maxtemp>
-              +{unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
+              {unit === "C" ? maxTemp : toFahrenheit(maxTemp)}°
             </Maxtemp>
             <Box
               sx={{
@@ -138,7 +138,7 @@ function FourthBox({
               }}
             >
               <Mintemp>
-                / +{unit === "C" ? minTemp : toFahrenheit(minTemp)}°
+                / {unit === "C" ? minTemp : toFahrenheit(minTemp)}°
               </Mintemp>
             </Box>
             <DateBox sx={{ fontSize: "1rem" }}>{days[dayIndex]}</DateBox>

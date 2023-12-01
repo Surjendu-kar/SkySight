@@ -1,4 +1,10 @@
-import { useEffect, createContext, useReducer, ReactNode, useMemo } from "react"; // Added ReactNode import here
+import {
+  useEffect,
+  createContext,
+  useReducer,
+  ReactNode,
+  useMemo,
+} from "react"; // Added ReactNode import here
 import { projectAuth } from "../firebase/config";
 
 interface User {
@@ -18,7 +24,7 @@ type AuthAction =
 
 export const AuthContext = createContext<
   AuthState & { dispatch: React.Dispatch<AuthAction> }
->({ user: null, authIsReady: false, dispatch: () => { } });
+>({ user: null, authIsReady: false, dispatch: () => {} });
 
 export const authReducer = (
   state: AuthState,
@@ -27,7 +33,7 @@ export const authReducer = (
   // reducer , here we update the state and return a new state
   // switch is used to check action type
   switch (
-  action.type // check login or logout
+    action.type // check login or logout
   ) {
     case "LOGIN":
       return { ...state, user: action.payload };
@@ -54,12 +60,10 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   });
 
   useEffect(() => {
-    const unsub = projectAuth.onAuthStateChanged(
-      (user: User | null) => {
-        dispatch({ type: "AUTH_IS_READY", payload: user });
-        unsub();
-      }
-    );
+    const unsub = projectAuth.onAuthStateChanged((user: User | null) => {
+      dispatch({ type: "AUTH_IS_READY", payload: user });
+      unsub();
+    });
   }, []);
 
   // use useMomo to prevent re-rendering

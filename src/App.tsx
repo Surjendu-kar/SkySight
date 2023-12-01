@@ -1,5 +1,4 @@
 import Home from "./routes/Home";
-import Details from "./routes/Details";
 import Login from "./routes/Login";
 import SignUp from "./routes/Signup";
 import { useAuthContext } from "./hooks/useAuthContext";
@@ -74,10 +73,6 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
-  },
-  {
-    path: "/details",
-    element: <RouteWrapper Component={Details} />,
   },
   {
     path: "/login",

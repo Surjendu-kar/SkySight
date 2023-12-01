@@ -3,6 +3,7 @@ import mainImage from "../images/fog.png";
 import coldImage from "../images/snow.png";
 import hotImage from "../images/sunny.png";
 import mildImage from "../images/cloud1.png";
+import { keyframes } from "@emotion/react";
 
 const TemperatureContext = styled(Typography)(({ theme }) => ({
   width: "fit-content",
@@ -91,9 +92,21 @@ const TypographyStyle = styled("span")(({ theme }) => ({
     fontSize: "0.5rem",
   },
 }));
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const Img = styled("img")(({ theme }) => ({
   width: "5rem",
   height: "5rem",
+  animation: `${fadeIn} 1s ease-in-out`,
+
   [theme.breakpoints.down("lg")]: {
     width: "3.5rem",
     height: "3.5rem",
@@ -151,7 +164,7 @@ const TempStyle = styled(Typography)(({ theme }) => ({
 const getWeatherImage = (temperature: number) => {
   if (temperature < 20) {
     return coldImage;
-  } else if (temperature >= 20 && temperature <= 26) {
+  } else if (temperature >= 20 && temperature <= 27) {
     return mildImage;
   } else {
     return hotImage;

@@ -24,7 +24,7 @@ const Label = styled("label")(() => ({
   margin: "30px auto",
 }));
 
-const CustomeBtn = styled("button")(() => ({
+const CustomBtn = styled("button")(() => ({
   background: "none",
   border: "2px solid #1f9751",
   padding: "6px 12px",
@@ -105,9 +105,9 @@ function SignUp() {
         </StyledNavigationButton>
       </RightAlignedDiv>
 
-      <CustomeBtn disabled={isPending} type="submit">
+      <CustomBtn disabled={isPending} type="submit">
         {isPending ? "Loading..." : "Sign Up"}
-      </CustomeBtn>
+      </CustomBtn>
 
       {error && <p style={{ fontSize: "1rem" }}>{error}</p>}
     </Form>

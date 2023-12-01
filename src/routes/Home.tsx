@@ -3,9 +3,10 @@ import React, { useCallback, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
+import { keyframes } from '@emotion/react';
 
 import {
-  Avatar,
+  // Avatar,
   Box,
   Input,
   Skeleton,
@@ -20,7 +21,7 @@ import ThirdBox from "../components/ThirdBox";
 import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
 import FourthBox from "../components/FourthBox";
-// import { Translation } from "react-i18next";
+import Cities from "../components/Cities";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -94,8 +95,10 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   fontFamily: "Roboto",
   margin: 0,
   padding: 0,
-  fontSize: "2rem", // default for larger screens
+  fontSize: "2rem", 
   letterSpacing: "0.15rem",
+  animation: `${fadeIn} 1s ease-in-out`,
+
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "2rem",
@@ -112,7 +115,9 @@ const StyledForeCast = styled(Typography)(({ theme }) => ({
   fontFamily: "Roboto",
   margin: 0,
   padding: 0,
-  fontSize: "1.8rem", // default for larger screens
+  fontSize: "1.8rem",
+  animation: `${fadeIn} 1s ease-in-out`,
+
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.6rem",
@@ -126,8 +131,18 @@ const StyledForeCast = styled(Typography)(({ theme }) => ({
   },
 }));
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const StyledTypography = styled(Typography)(({ theme }) => ({
-  fontSize: "1.2rem", // default for larger screens
+  fontSize: "1.2rem",
+  animation: `${fadeIn} 1s ease-in-out`,
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1rem",
@@ -140,24 +155,25 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const StyledAvatar = styled(Avatar)(({ theme }) => ({
-  marginRight: "5px",
-  width: "1.35rem",
-  height: "1.35rem",
 
-  [theme.breakpoints.down("lg")]: {
-    width: "1rem",
-    height: "1rem",
-  },
-  [theme.breakpoints.down("md")]: {
-    width: "1rem",
-    height: "1rem",
-  },
-  [theme.breakpoints.down("sm")]: {
-    width: "0.8rem",
-    height: "0.8rem",
-  },
-}));
+// const StyledAvatar = styled(Avatar)(({ theme }) => ({
+//   marginRight: "5px",
+//   width: "1.35rem",
+//   height: "1.35rem",
+
+//   [theme.breakpoints.down("lg")]: {
+//     width: "1rem",
+//     height: "1rem",
+//   },
+//   [theme.breakpoints.down("md")]: {
+//     width: "1rem",
+//     height: "1rem",
+//   },
+//   [theme.breakpoints.down("sm")]: {
+//     width: "0.8rem",
+//     height: "0.8rem",
+//   },
+// }));
 
 const StyledButton = styled("button")(({ theme }) => ({
   fontSize: "1rem",
@@ -357,45 +373,67 @@ function Home() {
     }
   };
 
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
+    React.useState(-1);
+  const [filteredCities, setFilteredCities] = React.useState<string[]>([]);
+
   const handleKeyPress = async (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    if (e.key === "Enter") {
-      try {
-        const cityData = await fetchCityApi(e); // This now directly returns the needed data.
-        const weatherData = await fetchApi(); // This now directly returns the needed data.
+    if (e.key === "ArrowDown" && filteredCities.length > 0) {
+      // Prevent default to stop the cursor from moving in the input field
+      e.preventDefault();
+      setSelectedSuggestionIndex((prevIndex) =>
+        prevIndex < filteredCities.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === "ArrowUp" && filteredCities.length > 0) {
+      e.preventDefault();
+      setSelectedSuggestionIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : 0
+      );
+    } else if (e.key === "Enter") {
+      // Check if a suggestion is selected
+      if (selectedSuggestionIndex >= 0) {
+        setUserVal(filteredCities[selectedSuggestionIndex]);
+        setFilteredCities([]);
+        setSelectedSuggestionIndex(-1);
+      } else {
+        try {
+          const cityData = await fetchCityApi(e); // This now directly returns the needed data.
+          const weatherData = await fetchApi(); // This now directly returns the needed data.
 
-        const existingValues = await fetchExistingValues();
-        if (!existingValues) {
-          console.error("Failed to fetch existing values");
-          return;
-        }
-
-        if (user && typeof user.email === "string" && user.email !== "") {
-          if (
-            userVal &&
-            cityData &&
-            weatherData &&
-            !existingValues.includes(userVal)
-          ) {
-            const ref = collection(projectFirestore, user.email);
-            const dataToPush = {
-              userval: userVal,
-              city: cityData.name,
-              state: cityData.state,
-              temp: weatherData.temp,
-            };
-            console.log("Pushing data to Firestore:", dataToPush);
-            await addDoc(ref, dataToPush);
-            console.log("Data pushed successfully.");
-          } else {
-            console.log("Conditions not met to push data to Firestore.");
+          const existingValues = await fetchExistingValues();
+          if (!existingValues) {
+            console.error("Failed to fetch existing values");
+            return;
           }
-        } else {
-          console.error("User or user email is not valid");
+
+          if (user && typeof user.email === "string" && user.email !== "") {
+            if (
+              userVal &&
+              cityData &&
+              weatherData &&
+              !existingValues.includes(userVal)
+            ) {
+              const ref = collection(projectFirestore, user.email);
+              const dataToPush = {
+                userval: userVal,
+                city: cityData.name,
+                state: cityData.state,
+                temp: weatherData.temp,
+              };
+              // console.log("Pushing data to Firestore:", dataToPush);
+              await addDoc(ref, dataToPush);
+              // console.log("Data pushed successfully.");
+            } else {
+              // console.log("Conditions not met to push data to Firestore.");
+            }
+          } else {
+            console.error("User or user email is not valid");
+          }
+        } catch (error) {
+          console.error("Error in handleKeyPress:", error);
         }
-      } catch (error) {
-        console.error("Error in handleKeyPress:", error);
       }
     }
   };
@@ -419,6 +457,15 @@ function Home() {
     }
   }, [temp, user]);
 
+  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {    
+    setUserVal(e.target.value);
+    const input = e.target.value.toLowerCase();
+    const suggestions = Cities.filter((city) =>
+      city.toLowerCase().startsWith(input)
+    );
+    setFilteredCities(suggestions);
+  };
+
   return (
     <Layout>
       {/* sidebar */}
@@ -435,7 +482,7 @@ function Home() {
             }}
           >
             {/* {user && user.displayName} */}
-            <StyledAvatar alt="Remy Sharp" />
+            {/* <StyledAvatar alt="Remy Sharp" /> */}
             <StyledTypography variant="h1">{formattedDate}</StyledTypography>
           </Box>
           <Box
@@ -460,6 +507,7 @@ function Home() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "relative", // Needed for absolute positioning of suggestions
               }}
             >
               <Box
@@ -480,11 +528,56 @@ function Home() {
                 id="search"
                 type="text"
                 placeholder="Search city"
-                onChange={(e) => setUserVal(e.target.value)}
+                // onChange={(e) => setUserVal(e.target.value)}
+                onChange={handleUserInput}
                 onKeyDown={handleKeyPress}
                 value={userVal}
                 autoComplete="off"
               />
+              {userVal && filteredCities.length > 0 && (
+                <ul
+                  style={{
+                    listStyleType: "none",
+                    padding: 0,
+                    marginTop: "5px",
+                    width: "100%",
+                    background: "#FFF",
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    zIndex: 1000,
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+                    maxHeight: "300px",
+                    overflowY: "auto",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {filteredCities.map((city, index) => (
+                    <li
+                      key={index}
+                      style={{
+                        padding: "5px 10px",
+                        color: "black",
+                        cursor: "pointer",
+                        backgroundColor:
+                          index === selectedSuggestionIndex
+                            ? "#c2e9eb"
+                            : "white",
+                        borderBottom: "1px solid #ddd", // Add a bottom border to each list item
+                      }}
+                      onClick={() => {
+                        setUserVal(city);
+                        setFilteredCities([]);
+                      }}
+                      onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                      onMouseLeave={() => setSelectedSuggestionIndex(-1)}
+                    >
+                      {city}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </Box>
             {/* <Box >lan</Box> */}
             {/* <Translation>{(t) => <ChangeLang t={t} />}</Translation> */}
@@ -604,6 +697,7 @@ function Home() {
                     sx={{
                       borderRadius: "20px",
                       backgroundColor: "black",
+                      animation: `${fadeIn} 1s ease-in-out`,
                     }}
                   >
                     <ForecastBtn

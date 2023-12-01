@@ -13,13 +13,16 @@ export const useLogin = () => {
     setIsPending(true);
 
     try {
-      const res = await signInWithEmailAndPassword(projectAuth, email, password);
+      const res = await signInWithEmailAndPassword(
+        projectAuth,
+        email,
+        password
+      );
 
       //dispatch login action
       if (res.user) {
         dispatch({ type: "LOGIN", payload: res.user });
       }
-      
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);

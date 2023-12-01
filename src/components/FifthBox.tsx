@@ -94,7 +94,6 @@ function FifthBox({ prevData }: FifthBoxProps) {
     <TemperatureBox>
       {prevData?.map((each) => (
         <PrevDataContainer key={uuid()} sx={{ color: "white" }}>
-          {/* <Typography>{each.userval}</Typography> */}
           <City>{each.city}</City>
           <State>{each.state}</State>
           <Box display={"flex"}>

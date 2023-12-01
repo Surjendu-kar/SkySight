@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { keyframes } from '@emotion/react';
 
 type FirstBoxProps = {
   allHumidity: number[];
@@ -17,11 +18,23 @@ type FirstBoxProps = {
   uvIndex: number[];
   allWindSpeed: number[];
 };
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const Heading = styled(Typography)(({ theme }) => ({
   padding: 0,
   margin: 0,
   fontFamily: "Roboto",
   fontSize: "2rem",
+  animation: `${fadeIn} 1s ease-in-out`,
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.55rem",
   },
@@ -110,6 +123,8 @@ function DataButton({
         color: active === dataType ? "black" : "#c2e9eb",
         backgroundColor: active === dataType ? "#c2e9eb" : "black",
         borderRadius: "20px",
+        animation: `${fadeIn} 1s ease-in-out`,
+
         "&:hover": { backgroundColor: "gray" },
       }}
       onClick={() => setActive(dataType)}
@@ -139,6 +154,7 @@ function ThirdBox({
       time: allTime[index],
     })
   );
+  
 
   return (
     <Box>
