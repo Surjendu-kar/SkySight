@@ -3,7 +3,8 @@ import React, { useCallback, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { keyframes } from '@emotion/react';
+import { keyframes } from "@emotion/react";
+import * as animationData from "../assets/loader-animation.json";
 
 import {
   // Avatar,
@@ -22,6 +23,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
 import FourthBox from "../components/FourthBox";
 import Cities from "../components/Cities";
+import { Loader } from "../components";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -95,10 +97,9 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   fontFamily: "Roboto",
   margin: 0,
   padding: 0,
-  fontSize: "2rem", 
+  fontSize: "2rem",
   letterSpacing: "0.15rem",
   animation: `${fadeIn} 1s ease-in-out`,
-
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "2rem",
@@ -117,7 +118,6 @@ const StyledForeCast = styled(Typography)(({ theme }) => ({
   padding: 0,
   fontSize: "1.8rem",
   animation: `${fadeIn} 1s ease-in-out`,
-
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.6rem",
@@ -142,6 +142,7 @@ const fadeIn = keyframes`
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.2rem",
+  fontFamily: "Roboto",
   animation: `${fadeIn} 1s ease-in-out`,
 
   [theme.breakpoints.down("lg")]: {
@@ -154,7 +155,6 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
     fontSize: "0.6rem",
   },
 }));
-
 
 // const StyledAvatar = styled(Avatar)(({ theme }) => ({
 //   marginRight: "5px",
@@ -234,6 +234,14 @@ type FirestoreDocument = {
   userval: string;
 };
 
+// Default location details
+const defaultLocation = {
+  lat: 23.3322,
+  lon: 86.3616,
+  city: "Purulia",
+  state: "West Bengal",
+};
+
 function Home() {
   const [userVal, setUserVal] = React.useState("");
   const [latitude, setLatitude] = React.useState<number | null>(null);
@@ -254,75 +262,102 @@ function Home() {
   );
   const [uvIndex, setUvIndex] = React.useState<number[]>([]);
   const [unit, setUnit] = React.useState<"C" | "F">("C");
+  const [message, setMessage] = React.useState<string>("");
   const forCastBoxRef = React.useRef<HTMLDivElement>(null);
 
   const key = import.meta.env.VITE_NASA_API_KEY;
-  const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
-  const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
   const { user } = useAuthContext();
 
-  const fetchApi = useCallback(async () => {
-    setIsAllTempLoading(true);
-    try {
-      const res = await fetch(API);
-      const data = await res.json();
-      if (res.ok) {
-        const currentHourTemp =
-          data.hourly.temperature_2m[new Date().getHours()];
-        setTemp(currentHourTemp);
-        setAllTemp(data.hourly.temperature_2m);
-        setAllTime(
-          data.hourly.time.map((each: string) => {
-            return each.slice(11, 13);
-          })
-        );
-        setHumidity(data.hourly.relativehumidity_2m[new Date().getHours()]);
-        setAllHumidity(data.hourly.relativehumidity_2m);
-        setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
-        setAllWindSpeed(data.hourly.windspeed_10m);
-        setUvIndex(data.hourly.uv_index);
-        return {
-          temp: currentHourTemp,
-        };
+  const fetchWeather = useCallback(
+    async (latitude: number | null, longitude: number | null) => {
+      // add a check for latitude and longitude
+      if (!latitude || !longitude) return;
+
+      setMessage("Loading...");
+      try {
+        const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
+        const res = await fetch(API);
+        const data = await res.json();
+        if (res.ok) {
+          const currentHourTemp =
+            data.hourly.temperature_2m[new Date().getHours()];
+          setTemp(currentHourTemp);
+          setAllTemp(data.hourly.temperature_2m);
+          setAllTime(
+            data.hourly.time.map((each: string) => {
+              return each.slice(11, 13);
+            })
+          );
+          setHumidity(data.hourly.relativehumidity_2m[new Date().getHours()]);
+          setAllHumidity(data.hourly.relativehumidity_2m);
+          setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
+          setAllWindSpeed(data.hourly.windspeed_10m);
+          setUvIndex(data.hourly.uv_index);
+          return {
+            temp: currentHourTemp,
+          };
+        }
+        return null;
+      } catch (error) {
+        console.log(error);
+        return null;
+      } finally {
+        setIsAllTempLoading(false);
+        if (userVal.length) setUserVal("");
       }
-      return null;
-    } catch (error) {
-      console.log(error);
-      return null;
-    } finally {
-      setIsAllTempLoading(false);
+    },
+    [userVal]
+  );
+
+  const fetchCityApi = async (
+    event: React.FormEvent | null,
+    city?: string,
+    shouldFetch: boolean = false
+  ) => {
+    const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${city || userVal
+      }&limit=5&appid=${key}`;
+
+    if (event) {
+      event.preventDefault();
     }
-  }, [API]);
 
-  useEffect(() => {
-    setLatitude(23.3322);
-    setLongitude(86.3616);
-    setCity("Purulia");
-    setState("West Bengal");
-  }, []);
-
-  const fetchCityApi = async (e: React.FormEvent) => {
-    e.preventDefault();
     try {
       const res = await fetch(cityApi);
       const data = await res.json();
       if (res.ok && data[0]) {
-        setUserVal("");
         setLatitude(data[0].lat);
         setLongitude(data[0].lon);
         setCity(data[0].name);
         setState(data[0].state);
+
+        // Fetch weather data only if the function is called from the search bar
+        if (shouldFetch) {
+          fetchWeather(data[0].lat, data[0].lon);
+        }
+
         return {
           name: data[0].name,
           state: data[0].state,
+          lat: data[0].lat,
+          lon: data[0].lon,
         };
       }
+
       return null;
     } catch (error) {
       console.log(error);
       return null;
     }
   };
+
+  const setDefaultLocation = useCallback(() => {
+    setLatitude(defaultLocation.lat);
+    setLongitude(defaultLocation.lon);
+    setCity(defaultLocation.city);
+    setState(defaultLocation.state);
+
+    fetchWeather(defaultLocation.lat, defaultLocation.lon);
+  }, [fetchWeather]);
 
   const dt = new Date();
   const formattedDate = `${dt.toLocaleDateString("en-US", {
@@ -331,18 +366,72 @@ function Home() {
     month: "short",
   })}, ${dt.getFullYear()}`;
 
-  useEffect(() => {
-    if (latitude !== null && longitude !== null) {
-      fetchApi();
-    } else {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position.coords.latitude);
-          console.log(position.coords.longitude);
-        });
+  const fetchCityAndState = useCallback(
+    async (lat: number, lon: number) => {
+      if (latitude && longitude && temp && !isAllTempLoading) return;
+      if (!lat || !lon) return;
+
+      const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${key}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.length > 0) {
+          setCity(data[0].name);
+          setState(data[0].state);
+        }
+      } catch (error) {
+        console.error("Error fetching city and state:", error);
+        // Handle error or set default city and state
       }
+    },
+    [key, temp, isAllTempLoading, latitude, longitude]
+  );
+
+  useEffect(() => {
+    // add check to avoid unnecessary api calls
+    if (userVal.trim().length > 0) return;
+    if (latitude && longitude && temp && !isAllTempLoading) return; 
+
+    setIsAllTempLoading(true);
+
+    if (navigator.geolocation) {
+      setMessage("Please allow location access.");
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setMessage("Fetching current city and state...");
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          setLatitude(lat);
+          setLongitude(lon);
+          fetchCityAndState(lat, lon);
+          fetchWeather(lat, lon);
+        },
+        () => {
+          // Error callback for when user blocks location access
+          setMessage(
+            `Location access denied, set default location to ${defaultLocation.city}.`
+          );
+          setDefaultLocation();
+        }
+      );
+    } else {
+      // If Geolocation is not supported by the browser, use default location
+      setMessage(
+        `Browser doesn't support location access, set default location to ${defaultLocation.city}.`
+      );
+      setDefaultLocation();
     }
-  }, [latitude, longitude, fetchApi]);
+  }, [
+    fetchWeather,
+    fetchCityAndState,
+    setDefaultLocation,
+    latitude,
+    longitude,
+    isAllTempLoading,
+    temp,
+    userVal,
+  ]);
 
   const handleThreeDaysClick = () => {
     setTimeout(() => {
@@ -368,7 +457,6 @@ function Home() {
       querySnapshot.forEach((doc) => {
         existingValues.push(doc.data().userval);
       });
-      console.log(existingValues);
       return existingValues;
     }
   };
@@ -383,24 +471,25 @@ function Home() {
     if (e.key === "ArrowDown" && filteredCities.length > 0) {
       // Prevent default to stop the cursor from moving in the input field
       e.preventDefault();
-      setSelectedSuggestionIndex((prevIndex) =>
-        prevIndex < filteredCities.length - 1 ? prevIndex + 1 : prevIndex
-      );
+      const indx = selectedSuggestionIndex < filteredCities.length - 1 ? selectedSuggestionIndex + 1 : selectedSuggestionIndex;
+      setSelectedSuggestionIndex(indx);
+      setUserVal(filteredCities[indx]);
     } else if (e.key === "ArrowUp" && filteredCities.length > 0) {
       e.preventDefault();
-      setSelectedSuggestionIndex((prevIndex) =>
-        prevIndex > 0 ? prevIndex - 1 : 0
-      );
+      const indx = selectedSuggestionIndex > 0 ? selectedSuggestionIndex - 1 : 0;
+      setSelectedSuggestionIndex(indx);
+      setUserVal(filteredCities[indx]);
     } else if (e.key === "Enter") {
       // Check if a suggestion is selected
       if (selectedSuggestionIndex >= 0) {
-        setUserVal(filteredCities[selectedSuggestionIndex]);
+        // setUserVal(filteredCities[selectedSuggestionIndex]);
         setFilteredCities([]);
         setSelectedSuggestionIndex(-1);
       } else {
         try {
+          setIsAllTempLoading(true);
           const cityData = await fetchCityApi(e); // This now directly returns the needed data.
-          const weatherData = await fetchApi(); // This now directly returns the needed data.
+          const weatherData = await fetchWeather(cityData?.lat, cityData?.lon); // This now directly returns the needed data.
 
           const existingValues = await fetchExistingValues();
           if (!existingValues) {
@@ -457,7 +546,7 @@ function Home() {
     }
   }, [temp, user]);
 
-  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {    
+  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserVal(e.target.value);
     const input = e.target.value.toLowerCase();
     const suggestions = Cities.filter((city) =>
@@ -468,6 +557,10 @@ function Home() {
 
   return (
     <Layout>
+      {isAllTempLoading && (
+        <Loader animationData={animationData} message={message} />
+      )}
+
       {/* sidebar */}
       <Sidebar />
       {/* mainbox */}
@@ -528,7 +621,6 @@ function Home() {
                 id="search"
                 type="text"
                 placeholder="Search city"
-                // onChange={(e) => setUserVal(e.target.value)}
                 onChange={handleUserInput}
                 onKeyDown={handleKeyPress}
                 value={userVal}
@@ -566,9 +658,11 @@ function Home() {
                             : "white",
                         borderBottom: "1px solid #ddd", // Add a bottom border to each list item
                       }}
-                      onClick={() => {
+                      onClick={async () => {
                         setUserVal(city);
                         setFilteredCities([]);
+                        setIsAllTempLoading(true);
+                        await fetchCityApi(null, city, true);
                       }}
                       onMouseEnter={() => setSelectedSuggestionIndex(index)}
                       onMouseLeave={() => setSelectedSuggestionIndex(-1)}
@@ -603,6 +697,7 @@ function Home() {
                   sx={{
                     color: unit === "C" ? "black" : "#c2e9eb",
                     backgroundColor: unit === "C" ? "#c2e9eb" : "black",
+                    fontFamily: "Roboto",
                   }}
                   onClick={() => setUnit("C")}
                 >
@@ -612,6 +707,7 @@ function Home() {
                   sx={{
                     color: unit === "F" ? "black" : "#c2e9eb",
                     backgroundColor: unit === "F" ? "#c2e9eb" : "black",
+                    fontFamily: "Roboto",
                   }}
                   onClick={() => setUnit("F")}
                 >
@@ -704,6 +800,7 @@ function Home() {
                       onClick={handleThreeDaysClick}
                       sx={{
                         color: forecastDays === 3 ? "black" : "#c2e9eb",
+                        fontFamily: "Roboto",
                         backgroundColor:
                           forecastDays === 3 ? "#c2e9eb" : "black",
                       }}
@@ -714,6 +811,7 @@ function Home() {
                       onClick={handleSixDaysClick}
                       sx={{
                         color: forecastDays === 6 ? "black" : "#c2e9eb",
+                        fontFamily: "Roboto",
                         backgroundColor:
                           forecastDays === 6 ? "#c2e9eb" : "black",
                       }}

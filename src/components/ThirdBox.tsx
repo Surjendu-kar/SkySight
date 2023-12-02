@@ -123,6 +123,7 @@ function DataButton({
         color: active === dataType ? "black" : "#c2e9eb",
         backgroundColor: active === dataType ? "#c2e9eb" : "black",
         borderRadius: "20px",
+        fontFamily: "Roboto",
         animation: `${fadeIn} 1s ease-in-out`,
 
         "&:hover": { backgroundColor: "gray" },
@@ -202,7 +203,7 @@ function ThirdBox({
                 background: "rgba(0,0,0,.7)",
                 color: "#fff",
                 border: 'none',
-                borderRadius: 10
+                borderRadius: 10,
               }}
             />
             <Line

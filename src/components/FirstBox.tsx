@@ -8,6 +8,7 @@ import { keyframes } from "@emotion/react";
 const TemperatureContext = styled(Typography)(({ theme }) => ({
   width: "fit-content",
   fontSize: "1.8rem",
+  fontFamily: "Roboto",
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.4rem",
@@ -22,6 +23,8 @@ const TemperatureContext = styled(Typography)(({ theme }) => ({
 const Subtitle = styled(Typography)(({ theme }) => ({
   fontSize: "0.75rem",
   width: "fit-content",
+  fontFamily: "Roboto",
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "0.55rem",
   },
