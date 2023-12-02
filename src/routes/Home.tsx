@@ -389,7 +389,7 @@ function Home() {
   useEffect(() => {
     // add check to avoid unnecessary api calls
     if (userVal.trim().length > 0) return;
-    if (latitude && longitude && temp && !isAllTempLoading) return;
+    if (latitude && longitude && temp && !isAllTempLoading) return; 
 
     setIsAllTempLoading(true);
 
