@@ -337,6 +337,8 @@ function Home() {
         return {
           name: data[0].name,
           state: data[0].state,
+          lat: data[0].lat,
+          lon: data[0].lon,
         };
       }
 
@@ -468,14 +470,14 @@ function Home() {
     if (e.key === "ArrowDown" && filteredCities.length > 0) {
       // Prevent default to stop the cursor from moving in the input field
       e.preventDefault();
-      setSelectedSuggestionIndex((prevIndex) =>
-        prevIndex < filteredCities.length - 1 ? prevIndex + 1 : prevIndex
-      );
+      const indx = selectedSuggestionIndex < filteredCities.length - 1 ? selectedSuggestionIndex + 1 : selectedSuggestionIndex;
+      setSelectedSuggestionIndex(indx);
+      setUserVal(filteredCities[indx]);
     } else if (e.key === "ArrowUp" && filteredCities.length > 0) {
       e.preventDefault();
-      setSelectedSuggestionIndex((prevIndex) =>
-        prevIndex > 0 ? prevIndex - 1 : 0
-      );
+      const indx = selectedSuggestionIndex > 0 ? selectedSuggestionIndex - 1 : 0;
+      setSelectedSuggestionIndex(indx);
+      setUserVal(filteredCities[indx]);
     } else if (e.key === "Enter") {
       // Check if a suggestion is selected
       if (selectedSuggestionIndex >= 0) {
@@ -486,7 +488,7 @@ function Home() {
         try {
           setIsAllTempLoading(true);
           const cityData = await fetchCityApi(e); // This now directly returns the needed data.
-          const weatherData = await fetchWeather(latitude, longitude); // This now directly returns the needed data.
+          const weatherData = await fetchWeather(cityData?.lat, cityData?.lon); // This now directly returns the needed data.
 
           const existingValues = await fetchExistingValues();
           if (!existingValues) {
