@@ -4,6 +4,7 @@ import lottie, { AnimationItem } from 'lottie-web';
 
 interface Props<T> {
     animationData: T;
+    message?: string;
 }
 
 const Message = styled(Typography)(({ theme }) => ({
@@ -40,7 +41,7 @@ const Container = styled(Box)({
 });
 
 const Loader = <T,>({
-    animationData,
+    animationData, message = 'Loading...',
 }: Props<T>) => {
     const [animation, setAnimation] = useState<AnimationItem | null>(null);
 
@@ -80,7 +81,7 @@ const Loader = <T,>({
 
                 {/* loading text */}
                 <Message>
-                    Loading...
+                    {message}
                 </Message>
             </Container>
         </FullScreenWrapper>

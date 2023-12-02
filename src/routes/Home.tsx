@@ -236,6 +236,14 @@ type FirestoreDocument = {
   userval: string;
 };
 
+// Default location details 
+const defaultLocation = {
+  lat: 23.3322,
+  lon: 86.3616,
+  city: "Purulia",
+  state: "West Bengal",
+};
+
 function Home() {
   const [userVal, setUserVal] = React.useState("");
   const [latitude, setLatitude] = React.useState<number | null>(null);
@@ -256,6 +264,7 @@ function Home() {
   );
   const [uvIndex, setUvIndex] = React.useState<number[]>([]);
   const [unit, setUnit] = React.useState<"C" | "F">("C");
+  const [message, setMessage] = React.useState<string>("");
   const forCastBoxRef = React.useRef<HTMLDivElement>(null);
 
   const key = import.meta.env.VITE_NASA_API_KEY;
@@ -263,7 +272,16 @@ function Home() {
   const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
   const { user } = useAuthContext();
 
+  const setDefaultLocation = () => {
+    setLatitude(defaultLocation.lat);
+    setLongitude(defaultLocation.lon);
+    setCity(defaultLocation.city);
+    setState(defaultLocation.state);
+  }
+
   const fetchApi = useCallback(async () => {
+    setMessage("Loading...");
+
     try {
       const res = await fetch(API);
       const data = await res.json();
@@ -326,6 +344,8 @@ function Home() {
   })}, ${dt.getFullYear()}`;
 
   const fetchCityAndState = useCallback(async (lat: number, lon: number) => {
+    setMessage("Fetching city and state...");
+
     const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${key}`;
     try {
       const response = await fetch(url);
@@ -344,6 +364,8 @@ function Home() {
     setIsAllTempLoading(true);
 
     if (navigator.geolocation) {
+      setMessage("Please allow location access.");
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
@@ -355,19 +377,15 @@ function Home() {
         },
         () => {
           // Error callback for when user blocks location access
-          setLatitude(23.3322);
-          setLongitude(86.3616);
-          setCity("Purulia");
-          setState("West Bengal");
+          setMessage(`Location access denied, set default location to ${defaultLocation.city}.`);
+          setDefaultLocation();
           fetchApi();
         }
       );
     } else {
       // If Geolocation is not supported by the browser, use default location
-      setLatitude(23.3322);
-      setLongitude(86.3616);
-      setCity("Purulia");
-      setState("West Bengal");
+      setMessage(`Browser doesn't support location access, set default location to ${defaultLocation.city}.`);
+      setDefaultLocation();
       fetchApi();
     }
   }, [fetchApi, fetchCityAndState]);
@@ -529,7 +547,7 @@ function Home() {
   return (
     <Layout>
       {isAllTempLoading && (
-        <Loader animationData={animationData} />
+        <Loader animationData={animationData} message={message} />
       )}
 
       {/* sidebar */}
