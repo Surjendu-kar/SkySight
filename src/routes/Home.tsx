@@ -344,8 +344,6 @@ function Home() {
   })}, ${dt.getFullYear()}`;
 
   const fetchCityAndState = useCallback(async (lat: number, lon: number) => {
-    setMessage("Fetching city and state...");
-
     const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${key}`;
     try {
       const response = await fetch(url);
@@ -368,6 +366,7 @@ function Home() {
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          setMessage("Fetching current city and state...");
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
           setLatitude(lat);

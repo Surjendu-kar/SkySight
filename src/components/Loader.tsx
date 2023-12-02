@@ -37,7 +37,10 @@ const FullScreenWrapper: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const Container = styled(Box)({
-    textAlign: 'center',
+    display : 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
 });
 
 const Loader = <T,>({
@@ -76,7 +79,7 @@ const Loader = <T,>({
                 {/* animation */}
                 <Box
                     ref={initializeAnimation}
-                    sx={{ mb: 3 }}
+                    sx={{ mb: 3, width: '10rem', textAlign: 'center' }}
                 />
 
                 {/* loading text */}
