@@ -3,8 +3,8 @@ import React, { useCallback, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { keyframes } from '@emotion/react';
-import * as animationData from '../assets/loader-animation.json';
+import { keyframes } from "@emotion/react";
+import * as animationData from "../assets/loader-animation.json";
 
 import {
   // Avatar,
@@ -101,7 +101,6 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   letterSpacing: "0.15rem",
   animation: `${fadeIn} 1s ease-in-out`,
 
-
   [theme.breakpoints.down("lg")]: {
     fontSize: "2rem",
   },
@@ -119,7 +118,6 @@ const StyledForeCast = styled(Typography)(({ theme }) => ({
   padding: 0,
   fontSize: "1.8rem",
   animation: `${fadeIn} 1s ease-in-out`,
-
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.6rem",
@@ -156,7 +154,6 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
     fontSize: "0.6rem",
   },
 }));
-
 
 // const StyledAvatar = styled(Avatar)(({ theme }) => ({
 //   marginRight: "5px",
@@ -236,7 +233,7 @@ type FirestoreDocument = {
   userval: string;
 };
 
-// Default location details 
+// Default location details
 const defaultLocation = {
   lat: 23.3322,
   lon: 86.3616,
@@ -268,73 +265,96 @@ function Home() {
   const forCastBoxRef = React.useRef<HTMLDivElement>(null);
 
   const key = import.meta.env.VITE_NASA_API_KEY;
-  const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${userVal}&limit=5&appid=${key}`;
-  const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
   const { user } = useAuthContext();
 
-  const setDefaultLocation = () => {
-    setLatitude(defaultLocation.lat);
-    setLongitude(defaultLocation.lon);
-    setCity(defaultLocation.city);
-    setState(defaultLocation.state);
-  }
+  const fetchWeather = useCallback(
+    async (latitude: number | null, longitude: number | null) => {
+      // add a check for latitude and longitude
+      if (!latitude || !longitude) return;
 
-  const fetchApi = useCallback(async () => {
-    setMessage("Loading...");
-
-    try {
-      const res = await fetch(API);
-      const data = await res.json();
-      if (res.ok) {
-        const currentHourTemp =
-          data.hourly.temperature_2m[new Date().getHours()];
-        setTemp(currentHourTemp);
-        setAllTemp(data.hourly.temperature_2m);
-        setAllTime(
-          data.hourly.time.map((each: string) => {
-            return each.slice(11, 13);
-          })
-        );
-        setHumidity(data.hourly.relativehumidity_2m[new Date().getHours()]);
-        setAllHumidity(data.hourly.relativehumidity_2m);
-        setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
-        setAllWindSpeed(data.hourly.windspeed_10m);
-        setUvIndex(data.hourly.uv_index);
-        return {
-          temp: currentHourTemp,
-        };
+      setMessage("Loading...");
+      try {
+        const API = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,rain,cloudcover,windspeed_10m,uv_index`;
+        const res = await fetch(API);
+        const data = await res.json();
+        if (res.ok) {
+          const currentHourTemp =
+            data.hourly.temperature_2m[new Date().getHours()];
+          setTemp(currentHourTemp);
+          setAllTemp(data.hourly.temperature_2m);
+          setAllTime(
+            data.hourly.time.map((each: string) => {
+              return each.slice(11, 13);
+            })
+          );
+          setHumidity(data.hourly.relativehumidity_2m[new Date().getHours()]);
+          setAllHumidity(data.hourly.relativehumidity_2m);
+          setWindSpeed(data.hourly.windspeed_10m[new Date().getHours()]);
+          setAllWindSpeed(data.hourly.windspeed_10m);
+          setUvIndex(data.hourly.uv_index);
+          return {
+            temp: currentHourTemp,
+          };
+        }
+        return null;
+      } catch (error) {
+        console.log(error);
+        return null;
+      } finally {
+        setIsAllTempLoading(false);
+        if (userVal.length) setUserVal("");
       }
-      return null;
-    } catch (error) {
-      console.log(error);
-      return null;
-    } finally {
-      setIsAllTempLoading(false);
-    }
-  }, [API]);
+    },
+    [userVal]
+  );
 
-  const fetchCityApi = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const fetchCityApi = async (
+    event: React.FormEvent | null,
+    city?: string,
+    shouldFetch: boolean = false
+  ) => {
+    const cityApi = `https://api.openweathermap.org/geo/1.0/direct?q=${city || userVal
+      }&limit=5&appid=${key}`;
+
+    if (event) {
+      event.preventDefault();
+    }
+
     try {
       const res = await fetch(cityApi);
       const data = await res.json();
       if (res.ok && data[0]) {
-        setUserVal("");
         setLatitude(data[0].lat);
         setLongitude(data[0].lon);
         setCity(data[0].name);
         setState(data[0].state);
+
+        // Fetch weather data only if the function is called from the search bar
+        if (shouldFetch) {
+          fetchWeather(data[0].lat, data[0].lon);
+        }
+
         return {
           name: data[0].name,
           state: data[0].state,
         };
       }
+
       return null;
     } catch (error) {
       console.log(error);
       return null;
     }
   };
+
+  const setDefaultLocation = useCallback(() => {
+    setLatitude(defaultLocation.lat);
+    setLongitude(defaultLocation.lon);
+    setCity(defaultLocation.city);
+    setState(defaultLocation.state);
+
+    fetchWeather(defaultLocation.lat, defaultLocation.lon);
+  }, [fetchWeather]);
 
   const dt = new Date();
   const formattedDate = `${dt.toLocaleDateString("en-US", {
@@ -343,22 +363,32 @@ function Home() {
     month: "short",
   })}, ${dt.getFullYear()}`;
 
-  const fetchCityAndState = useCallback(async (lat: number, lon: number) => {
-    const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${key}`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.length > 0) {
-        setCity(data[0].name);
-        setState(data[0].state);
+  const fetchCityAndState = useCallback(
+    async (lat: number, lon: number) => {
+      if (latitude && longitude && temp && !isAllTempLoading) return;
+      if (!lat || !lon) return;
+
+      const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${key}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.length > 0) {
+          setCity(data[0].name);
+          setState(data[0].state);
+        }
+      } catch (error) {
+        console.error("Error fetching city and state:", error);
+        // Handle error or set default city and state
       }
-    } catch (error) {
-      console.error("Error fetching city and state:", error);
-      // Handle error or set default city and state
-    }
-  }, [key]);
+    },
+    [key, temp, isAllTempLoading, latitude, longitude]
+  );
 
   useEffect(() => {
+    // add check to avoid unnecessary api calls
+    if (userVal.trim().length > 0) return;
+    if (latitude && longitude && temp && !isAllTempLoading) return;
+
     setIsAllTempLoading(true);
 
     if (navigator.geolocation) {
@@ -372,54 +402,33 @@ function Home() {
           setLatitude(lat);
           setLongitude(lon);
           fetchCityAndState(lat, lon);
-          fetchApi();
+          fetchWeather(lat, lon);
         },
         () => {
           // Error callback for when user blocks location access
-          setMessage(`Location access denied, set default location to ${defaultLocation.city}.`);
+          setMessage(
+            `Location access denied, set default location to ${defaultLocation.city}.`
+          );
           setDefaultLocation();
-          fetchApi();
         }
       );
     } else {
       // If Geolocation is not supported by the browser, use default location
-      setMessage(`Browser doesn't support location access, set default location to ${defaultLocation.city}.`);
+      setMessage(
+        `Browser doesn't support location access, set default location to ${defaultLocation.city}.`
+      );
       setDefaultLocation();
-      fetchApi();
     }
-  }, [fetchApi, fetchCityAndState]);
-
-  useEffect(() => {
-    const fetchLocationDetails = () => {
-      if (latitude !== null && longitude !== null) {
-        fetchApi();
-      } else {
-        // Set default location if user blocks or hasn't provided location access
-        setLatitude(23.3322);
-        setLongitude(86.3616);
-        setCity("Purulia");
-        setState("West Bengal");
-        fetchApi();
-      }
-    };
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          fetchApi();
-        },
-        () => {
-          // Error callback for when user blocks location access
-          fetchLocationDetails();
-        }
-      );
-    } else {
-      // If Geolocation is not supported by the browser, use default location
-      fetchLocationDetails();
-    }
-  }, [latitude, longitude, fetchApi]);
+  }, [
+    fetchWeather,
+    fetchCityAndState,
+    setDefaultLocation,
+    latitude,
+    longitude,
+    isAllTempLoading,
+    temp,
+    userVal,
+  ]);
 
   const handleThreeDaysClick = () => {
     setTimeout(() => {
@@ -445,7 +454,6 @@ function Home() {
       querySnapshot.forEach((doc) => {
         existingValues.push(doc.data().userval);
       });
-      console.log(existingValues);
       return existingValues;
     }
   };
@@ -471,13 +479,14 @@ function Home() {
     } else if (e.key === "Enter") {
       // Check if a suggestion is selected
       if (selectedSuggestionIndex >= 0) {
-        setUserVal(filteredCities[selectedSuggestionIndex]);
+        // setUserVal(filteredCities[selectedSuggestionIndex]);
         setFilteredCities([]);
         setSelectedSuggestionIndex(-1);
       } else {
         try {
+          setIsAllTempLoading(true);
           const cityData = await fetchCityApi(e); // This now directly returns the needed data.
-          const weatherData = await fetchApi(); // This now directly returns the needed data.
+          const weatherData = await fetchWeather(latitude, longitude); // This now directly returns the needed data.
 
           const existingValues = await fetchExistingValues();
           if (!existingValues) {
@@ -609,7 +618,6 @@ function Home() {
                 id="search"
                 type="text"
                 placeholder="Search city"
-                // onChange={(e) => setUserVal(e.target.value)}
                 onChange={handleUserInput}
                 onKeyDown={handleKeyPress}
                 value={userVal}
@@ -647,9 +655,11 @@ function Home() {
                             : "white",
                         borderBottom: "1px solid #ddd", // Add a bottom border to each list item
                       }}
-                      onClick={() => {
+                      onClick={async () => {
                         setUserVal(city);
                         setFilteredCities([]);
+                        setIsAllTempLoading(true);
+                        await fetchCityApi(null, city, true);
                       }}
                       onMouseEnter={() => setSelectedSuggestionIndex(index)}
                       onMouseLeave={() => setSelectedSuggestionIndex(-1)}
