@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { keyframes } from '@emotion/react';
+import * as animationData from '../assets/loader-animation.json';
 
 import {
   // Avatar,
@@ -22,6 +23,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import FifthBox from "../components/FifthBox";
 import FourthBox from "../components/FourthBox";
 import Cities from "../components/Cities";
+import { Loader } from "../components";
 
 const Layout = styled(Box)(() => ({
   display: "flex",
@@ -262,7 +264,6 @@ function Home() {
   const { user } = useAuthContext();
 
   const fetchApi = useCallback(async () => {
-    setIsAllTempLoading(true);
     try {
       const res = await fetch(API);
       const data = await res.json();
@@ -340,6 +341,8 @@ function Home() {
   }, [key]);
 
   useEffect(() => {
+    setIsAllTempLoading(true);
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -525,6 +528,10 @@ function Home() {
 
   return (
     <Layout>
+      {isAllTempLoading && (
+        <Loader animationData={animationData} />
+      )}
+
       {/* sidebar */}
       <Sidebar />
       {/* mainbox */}
