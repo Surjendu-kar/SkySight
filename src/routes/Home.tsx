@@ -95,7 +95,7 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   fontFamily: "Roboto",
   margin: 0,
   padding: 0,
-  fontSize: "2rem", 
+  fontSize: "2rem",
   letterSpacing: "0.15rem",
   animation: `${fadeIn} 1s ease-in-out`,
 
@@ -294,13 +294,6 @@ function Home() {
     }
   }, [API]);
 
-  useEffect(() => {
-    setLatitude(23.3322);
-    setLongitude(86.3616);
-    setCity("Purulia");
-    setState("West Bengal");
-  }, []);
-
   const fetchCityApi = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -331,16 +324,80 @@ function Home() {
     month: "short",
   })}, ${dt.getFullYear()}`;
 
-  useEffect(() => {
-    if (latitude !== null && longitude !== null) {
-      fetchApi();
-    } else {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position.coords.latitude);
-          console.log(position.coords.longitude);
-        });
+  const fetchCityAndState = useCallback(async (lat: number, lon: number) => {
+    const url = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${key}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.length > 0) {
+        setCity(data[0].name);
+        setState(data[0].state);
       }
+    } catch (error) {
+      console.error("Error fetching city and state:", error);
+      // Handle error or set default city and state
+    }
+  }, [key]);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          setLatitude(lat);
+          setLongitude(lon);
+          fetchCityAndState(lat, lon);
+          fetchApi();
+        },
+        () => {
+          // Error callback for when user blocks location access
+          setLatitude(23.3322);
+          setLongitude(86.3616);
+          setCity("Purulia");
+          setState("West Bengal");
+          fetchApi();
+        }
+      );
+    } else {
+      // If Geolocation is not supported by the browser, use default location
+      setLatitude(23.3322);
+      setLongitude(86.3616);
+      setCity("Purulia");
+      setState("West Bengal");
+      fetchApi();
+    }
+  }, [fetchApi, fetchCityAndState]);
+
+  useEffect(() => {
+    const fetchLocationDetails = () => {
+      if (latitude !== null && longitude !== null) {
+        fetchApi();
+      } else {
+        // Set default location if user blocks or hasn't provided location access
+        setLatitude(23.3322);
+        setLongitude(86.3616);
+        setCity("Purulia");
+        setState("West Bengal");
+        fetchApi();
+      }
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          fetchApi();
+        },
+        () => {
+          // Error callback for when user blocks location access
+          fetchLocationDetails();
+        }
+      );
+    } else {
+      // If Geolocation is not supported by the browser, use default location
+      fetchLocationDetails();
     }
   }, [latitude, longitude, fetchApi]);
 
@@ -457,7 +514,7 @@ function Home() {
     }
   }, [temp, user]);
 
-  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {    
+  const handleUserInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserVal(e.target.value);
     const input = e.target.value.toLowerCase();
     const suggestions = Cities.filter((city) =>
