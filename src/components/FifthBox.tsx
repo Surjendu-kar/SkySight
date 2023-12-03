@@ -21,6 +21,7 @@ const PrevDataContainer = styled(Card)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: "#2e2e39",
+
   [theme.breakpoints.down("lg")]: {
     minWidth: "5rem",
     height: "2rem",
@@ -34,15 +35,18 @@ const PrevDataContainer = styled(Card)(({ theme }) => ({
     margin: "5px",
   },
   [theme.breakpoints.down("sm")]: {
-    minWidth: "3rem",
-    height: "1rem",
+    minWidth: "5rem",
+    height: "5rem",
     padding: "20px",
     margin: "5px",
+    textAlign: "center",
+    gap: 6,
   },
 }));
 
 const City = styled(Typography)(({ theme }) => ({
   fontSize: "1.25rem",
+
   [theme.breakpoints.down("lg")]: {
     fontSize: "1rem",
   },
@@ -50,7 +54,7 @@ const City = styled(Typography)(({ theme }) => ({
     fontSize: "0.8rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.65rem",
+    fontSize: ".8rem",
   },
 }));
 const State = styled(Typography)(({ theme }) => ({
@@ -62,7 +66,7 @@ const State = styled(Typography)(({ theme }) => ({
     fontSize: "0.5rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.4rem",
+    fontSize: "1rem",
   },
 }));
 const Temp = styled(Typography)(({ theme }) => ({
@@ -74,7 +78,7 @@ const Temp = styled(Typography)(({ theme }) => ({
     fontSize: "0.7rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.55rem",
+    fontSize: ".7rem",
   },
 }));
 

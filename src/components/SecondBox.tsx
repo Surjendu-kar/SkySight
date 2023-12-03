@@ -2,13 +2,16 @@
 import { Box, styled } from "@mui/material";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
-const Map = styled(Box)(() => ({
+const MapsOverlay = styled(Box)(({ theme }) => ({
   flex: 1,
   margin: "10px",
   padding: "10px",
   backgroundColor: "transparent",
   color: "white",
-  minHeight: '13.5rem',
+
+  [theme.breakpoints.down("md")]: {
+    margin: "2px",
+  },
 }));
 
 type FirstBoxProps = {
@@ -18,9 +21,9 @@ type FirstBoxProps = {
   longitude: number | null;
 };
 
-function SecondBox({ city, state, latitude, longitude }: FirstBoxProps) {
+const SecondBox = ({ city, state, latitude, longitude }: FirstBoxProps) => {
   return (
-    <Map>
+    <MapsOverlay>
       {latitude && longitude && (
         <MapContainer
           key={`${latitude}-${longitude}`}
@@ -29,7 +32,7 @@ function SecondBox({ city, state, latitude, longitude }: FirstBoxProps) {
           zoom={13}
           style={{
             width: "100%",
-            height: "100%",
+            height: '13.5rem',
             borderRadius: "20px",
           }}
         >
@@ -46,7 +49,7 @@ function SecondBox({ city, state, latitude, longitude }: FirstBoxProps) {
           </Marker>
         </MapContainer>
       )}
-    </Map>
+    </MapsOverlay>
   );
 }
 

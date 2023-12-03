@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Typography, styled } from "@mui/material";
+import { Box, Card, Typography, styled } from "@mui/material";
 import mainImage from "../images/fog.png";
 import coldImage from "../images/snow.png";
 import hotImage from "../images/sunny.png";
@@ -8,7 +8,6 @@ import { keyframes } from "@emotion/react";
 const TemperatureContext = styled(Typography)(({ theme }) => ({
   width: "fit-content",
   fontSize: "1.8rem",
-  fontFamily: "Roboto",
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.4rem",
@@ -17,13 +16,12 @@ const TemperatureContext = styled(Typography)(({ theme }) => ({
     fontSize: "0.9rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.7rem",
+    fontSize: "1rem",
   },
 }));
 const Subtitle = styled(Typography)(({ theme }) => ({
   fontSize: "0.75rem",
   width: "fit-content",
-  fontFamily: "Roboto",
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "0.55rem",
@@ -32,17 +30,21 @@ const Subtitle = styled(Typography)(({ theme }) => ({
     fontSize: "0.45rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.40rem",
+    fontSize: ".6rem",
   },
 }));
 
-const TemperatureBox = styled(Box)(() => ({
+const TemperatureBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
   flexDirection: "row",
   overflowX: "auto",
   minWidth: "100%",
   borderRadius: "20px",
+
+  [theme.breakpoints.down("sm")]: {
+    marginTop: "1rem",
+  },
 }));
 
 const toFahrenheit = (celsius: number): number => {
@@ -75,11 +77,12 @@ const CardContainer = styled(Card)(({ theme }) => ({
     borderRadius: "18px",
   },
   [theme.breakpoints.down("sm")]: {
-    minWidth: "1.5rem",
-    height: "3rem",
+    minWidth: "3rem",
+    minHeight: "5rem",
     padding: "7px",
     margin: "3px",
     borderRadius: "15px",
+    gap: '.3rem',
   },
 }));
 
@@ -119,8 +122,8 @@ const Img = styled("img")(({ theme }) => ({
     height: "2.5rem",
   },
   [theme.breakpoints.down("sm")]: {
-    width: "2rem",
-    height: "2rem",
+    width: "4rem",
+    height: "4rem",
   },
 }));
 const Time = styled(Typography)(({ theme }) => ({
@@ -132,7 +135,7 @@ const Time = styled(Typography)(({ theme }) => ({
     fontSize: "0.55rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.45rem",
+    fontSize: ".8rem",
   },
 }));
 const TempImg = styled("img")(({ theme }) => ({
@@ -147,8 +150,8 @@ const TempImg = styled("img")(({ theme }) => ({
     height: "1rem",
   },
   [theme.breakpoints.down("sm")]: {
-    width: "0.95rem",
-    height: "0.95rem",
+    width: "1.6rem",
+    height: "1.6rem",
   },
 }));
 const TempStyle = styled(Typography)(({ theme }) => ({
@@ -160,7 +163,7 @@ const TempStyle = styled(Typography)(({ theme }) => ({
     fontSize: "0.65rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.55rem",
+    fontSize: ".8rem",
   },
 }));
 
@@ -198,42 +201,50 @@ function FirstBox({
   return (
     <Box>
       <Box height={"50%"}>
-        <Grid container spacing={2}>
-          <Grid item xs={3} sx={{ textAlign: "center" }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          {/* Image Section */}
+          <Box sx={{ flexBasis: '20%', textAlign: 'center' }}>
             <Img src={mainImage} />
-          </Grid>
+          </Box>
 
-          <Grid item xs={2.5}>
-            <TemperatureContext variant="h5">
-              {city ? city : "City not found"}
-            </TemperatureContext>
-            <Subtitle>{state ? state : "State not found"}</Subtitle>
-          </Grid>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, flex: 1 }}>
+            {/* City and State Section */}
+            <Box sx={{ flexBasis: '20%' }}>
+              <TemperatureContext variant="h5">
+                {city ? city : "City not found"}
+              </TemperatureContext>
+              <Subtitle>{state ? state : "State not found"}</Subtitle>
+            </Box>
 
-          <Grid item xs={2.5}>
-            <TemperatureContext display={"flex"}>
-              +{unit === "C" ? temp : toFahrenheit(Number(temp))}
-              <TypographyStyle>°</TypographyStyle>
-            </TemperatureContext>
-            <Subtitle>Temperature</Subtitle>
-          </Grid>
+            {/* Temperature Section */}
+            <Box sx={{ flexBasis: '20%' }}>
+              <TemperatureContext display="flex">
+                +{unit === "C" ? temp : toFahrenheit(Number(temp))}
+                <TypographyStyle>°</TypographyStyle>
+              </TemperatureContext>
+              <Subtitle>Temperature</Subtitle>
+            </Box>
 
-          <Grid item xs={2}>
-            <TemperatureContext>
-              {humidity && humidity}
-              <TypographyStyle>%</TypographyStyle>
-            </TemperatureContext>
-            <Subtitle>Humidity</Subtitle>
-          </Grid>
+            {/* Humidity Section */}
+            <Box sx={{ flexBasis: '16.66%' }}>
+              <TemperatureContext>
+                {humidity && humidity}
+                <TypographyStyle>%</TypographyStyle>
+              </TemperatureContext>
+              <Subtitle>Humidity</Subtitle>
+            </Box>
 
-          <Grid item xs={2}>
-            <TemperatureContext>
-              {windSpeed && windSpeed}
-              <TypographyStyle>km/h</TypographyStyle>{" "}
-            </TemperatureContext>
-            <Subtitle>Wind Speed</Subtitle>
-          </Grid>
-        </Grid>
+            {/* Wind Speed Section */}
+            <Box sx={{ flexBasis: '16.66%' }}>
+              <TemperatureContext>
+                {windSpeed && windSpeed}
+                <TypographyStyle>km/h</TypographyStyle>
+              </TemperatureContext>
+              <Subtitle>Wind Speed</Subtitle>
+            </Box>
+          </Box>
+        </Box>
+
       </Box>
       <TemperatureBox>
         {allTemp.slice(0, 24).map((each, index) => {

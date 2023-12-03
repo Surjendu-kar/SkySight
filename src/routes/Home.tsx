@@ -5,10 +5,13 @@ import { projectFirestore } from "../firebase/config";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { keyframes } from "@emotion/react";
 import * as animationData from "../assets/loader-animation.json";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 import {
   // Avatar,
   Box,
+  Hidden,
   Input,
   Skeleton,
   Typography,
@@ -51,7 +54,7 @@ const MainContainer = styled(Box)(() => ({
   overflow: "hidden",
 }));
 
-const FirstCol = styled(Box)(() => ({
+const FirstCol = styled(Box)(({ theme }) => ({
   flex: 2,
   margin: "10px",
   padding: "10px",
@@ -59,6 +62,11 @@ const FirstCol = styled(Box)(() => ({
   backgroundColor: "#2e2e39",
   color: "white",
   width: "50%",
+
+  [theme.breakpoints.down("md")]: {
+    width: "90%",
+    marginTop: 20,
+  },
 }));
 
 const StyledInput = styled(Input)(({ theme }) => ({
@@ -90,6 +98,8 @@ const StyledInput = styled(Input)(({ theme }) => ({
   [theme.breakpoints.down("sm")]: {
     fontSize: "10px",
     padding: "0 2px",
+
+    width: '60%'
   },
 }));
 
@@ -114,7 +124,6 @@ const StyledSkySight = styled(Typography)(({ theme }) => ({
   },
 }));
 const StyledForeCast = styled(Typography)(({ theme }) => ({
-  fontFamily: "Roboto",
   margin: 0,
   padding: 0,
   fontSize: "1.8rem",
@@ -128,7 +137,7 @@ const StyledForeCast = styled(Typography)(({ theme }) => ({
     margin: "0 10px",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "1rem",
+    fontSize: "1.3rem",
   },
 }));
 
@@ -152,7 +161,7 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
     fontSize: "0.9rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.6rem",
+    fontSize: ".7rem",
   },
 }));
 
@@ -222,7 +231,7 @@ const ForecastBtn = styled("button")(({ theme }) => ({
     padding: "0.30rem 0.3rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.55rem",
+    fontSize: ".9rem",
     padding: "0.2rem 0.3rem",
   },
 }));
@@ -555,6 +564,10 @@ function Home() {
     setFilteredCities(suggestions);
   };
 
+  // use media query
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Layout>
       {isAllTempLoading && (
@@ -562,7 +575,9 @@ function Home() {
       )}
 
       {/* sidebar */}
-      <Sidebar />
+      <Hidden smDown>
+        <Sidebar />
+      </Hidden>
       {/* mainbox */}
       <MainContainer>
         {/* navbar */}
@@ -595,86 +610,88 @@ function Home() {
               gap: "1rem",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative", // Needed for absolute positioning of suggestions
-              }}
-            >
+            <Hidden mdDown>
               <Box
-                bgcolor="#EEEDED"
-                height={35}
-                pl={1}
                 sx={{
-                  borderTopLeftRadius: "20px",
-                  borderBottomLeftRadius: "20px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  position: "relative", // Needed for absolute positioning of suggestions
                 }}
               >
-                🔍
-              </Box>
-              <StyledInput
-                id="search"
-                type="text"
-                placeholder="Search city"
-                onChange={handleUserInput}
-                onKeyDown={handleKeyPress}
-                value={userVal}
-                autoComplete="off"
-              />
-              {userVal && filteredCities.length > 0 && (
-                <Typography
-                  component='ul'
-                  style={{
-                    listStyleType: "none",
-                    padding: 0,
-                    marginTop: "5px",
-                    width: "100%",
-                    background: "#FFF",
-                    position: "absolute",
-                    top: "100%",
-                    left: 0,
-                    right: 0,
-                    zIndex: 1000,
-                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
-                    maxHeight: "300px",
-                    overflowY: "auto",
-                    borderRadius: "5px",
+                <Box
+                  bgcolor="#EEEDED"
+                  height={35}
+                  pl={1}
+                  sx={{
+                    borderTopLeftRadius: "20px",
+                    borderBottomLeftRadius: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {filteredCities.map((city, index) => (
-                    <Typography
-                      component='li'
-                      key={index}
-                      style={{
-                        padding: "5px 10px",
-                        color: "black",
-                        cursor: "pointer",
-                        backgroundColor:
-                          index === selectedSuggestionIndex
-                            ? "#c2e9eb"
-                            : "white",
-                        borderBottom: "1px solid #ddd", // Add a bottom border to each list item
-                      }}
-                      onClick={async () => {
-                        setUserVal(city);
-                        setFilteredCities([]);
-                        setIsAllTempLoading(true);
-                        await fetchCityApi(null, city, true);
-                      }}
-                      onMouseEnter={() => setSelectedSuggestionIndex(index)}
-                      onMouseLeave={() => setSelectedSuggestionIndex(-1)}
-                    >
-                      {city}
-                    </Typography>
-                  ))}
-                </Typography>
-              )}
-            </Box>
+                  🔍
+                </Box>
+                <StyledInput
+                  id="search"
+                  type="text"
+                  placeholder="Search city"
+                  onChange={handleUserInput}
+                  onKeyDown={handleKeyPress}
+                  value={userVal}
+                  autoComplete="off"
+                />
+                {userVal && filteredCities.length > 0 && (
+                  <Typography
+                    component='ul'
+                    style={{
+                      listStyleType: "none",
+                      padding: 0,
+                      marginTop: "5px",
+                      width: "100%",
+                      background: "#FFF",
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      zIndex: 1000,
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+                      maxHeight: "300px",
+                      overflowY: "auto",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    {filteredCities.map((city, index) => (
+                      <Typography
+                        component='li'
+                        key={index}
+                        style={{
+                          padding: "5px 10px",
+                          color: "black",
+                          cursor: "pointer",
+                          backgroundColor:
+                            index === selectedSuggestionIndex
+                              ? "#c2e9eb"
+                              : "white",
+                          borderBottom: "1px solid #ddd", // Add a bottom border to each list item
+                        }}
+                        onClick={async () => {
+                          setUserVal(city);
+                          setFilteredCities([]);
+                          setIsAllTempLoading(true);
+                          await fetchCityApi(null, city, true);
+                        }}
+                        onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                        onMouseLeave={() => setSelectedSuggestionIndex(-1)}
+                      >
+                        {city}
+                      </Typography>
+                    ))}
+                  </Typography>
+                )}
+              </Box>
+            </Hidden>
             {/* <Box >lan</Box> */}
             {/* <Translation>{(t) => <ChangeLang t={t} />}</Translation> */}
 
@@ -722,7 +739,7 @@ function Home() {
 
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           {/* row-1 */}
-          <Box sx={{ display: "flex", minHeight: "10vh", height: "auto" }}>
+          <Box sx={{ display: "flex", minHeight: "10vh", height: "auto", flexDirection: isMobile ? 'column' : 'row' }}>
             {/* Box 1 */}
             <FirstCol>
               <FirstBox
@@ -745,7 +762,7 @@ function Home() {
             />
           </Box>
           {/* row-2 */}
-          <Box sx={{ display: "flex", minHeight: "10vh" }}>
+          <Box sx={{ display: "flex", minHeight: "10vh", flexDirection: isMobile ? 'column' : 'row' }}>
             {/* Box 3 */}
             <FirstCol
               sx={{
@@ -785,6 +802,7 @@ function Home() {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  marginBottom: isMobile ? 1 : 0,
                 }}
               >
                 <StyledForeCast>ForeCast</StyledForeCast>
@@ -800,7 +818,6 @@ function Home() {
                       onClick={handleThreeDaysClick}
                       sx={{
                         color: forecastDays === 3 ? "black" : "#c2e9eb",
-                        fontFamily: "Roboto",
                         backgroundColor:
                           forecastDays === 3 ? "#c2e9eb" : "black",
                       }}
@@ -811,7 +828,6 @@ function Home() {
                       onClick={handleSixDaysClick}
                       sx={{
                         color: forecastDays === 6 ? "black" : "#c2e9eb",
-                        fontFamily: "Roboto",
                         backgroundColor:
                           forecastDays === 6 ? "#c2e9eb" : "black",
                       }}
@@ -872,6 +888,10 @@ function Home() {
                 backgroundColor: "#1e1f24",
                 width: "50%",
                 position: "relative",
+
+                [theme.breakpoints.down("md")]: {
+                  width: "100%",
+                },
 
                 // Step 2: Add the ::after pseudo-element
                 "::after": {

@@ -27,7 +27,6 @@ type FourthBoxProps = {
 
 const Maxtemp = styled(Typography)(({ theme }) => ({
   fontSize: "1.5rem",
-  fontFamily: "Roboto",
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "1.1rem",
@@ -36,13 +35,12 @@ const Maxtemp = styled(Typography)(({ theme }) => ({
     fontSize: "0.9rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.7rem",
+    fontSize: "1rem",
   },
 }));
 
 const Mintemp = styled(Typography)(({ theme }) => ({
   fontSize: "1rem",
-  fontFamily: "Roboto",
 
   [theme.breakpoints.down("lg")]: {
     fontSize: "0.8rem",
@@ -51,7 +49,7 @@ const Mintemp = styled(Typography)(({ theme }) => ({
     fontSize: "0.6rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.5rem",
+    fontSize: "1rem",
   },
 }));
 
@@ -73,7 +71,7 @@ const MainContainer = styled(Box)(({ theme }) => ({
     margin: "0.2rem",
   },
   [theme.breakpoints.down("sm")]: {
-    padding: "0.2rem",
+    padding: ".5rem",
     margin: "0.2rem",
   },
 }));

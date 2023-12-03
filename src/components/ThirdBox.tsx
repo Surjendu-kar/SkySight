@@ -31,7 +31,6 @@ const fadeIn = keyframes`
 const Heading = styled(Typography)(({ theme }) => ({
   padding: 0,
   margin: 0,
-  fontFamily: "Roboto",
   fontSize: "2rem",
   animation: `${fadeIn} 1s ease-in-out`,
 
@@ -42,7 +41,7 @@ const Heading = styled(Typography)(({ theme }) => ({
     fontSize: "1.2rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.9rem",
+    fontSize: "1.3rem",
     margin: "0 0.5rem 0 0",
   },
 }));
@@ -63,8 +62,8 @@ const ButtonStyle = styled("button")(({ theme }) => ({
     fontSize: "0.6rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: "0.4rem",
-    padding: "2px",
+    fontSize: ".9rem",
+    padding: "8px",
   },
 }));
 
@@ -77,8 +76,16 @@ const MainContainer = styled(Box)(({ theme }) => ({
     height: "6rem",
   },
   [theme.breakpoints.down("sm")]: {
-    height: "5rem",
+    height: "8rem",
   },
+
+  '& .recharts-text': {
+    [theme.breakpoints.down("sm")]: {
+      tspan: {
+        fontSize: '.8rem',
+      }
+    }
+  }
 }));
 
 const BoxContainer = styled(Box)(({ theme }) => ({
@@ -87,9 +94,10 @@ const BoxContainer = styled(Box)(({ theme }) => ({
   alignItems: "center",
   marginBottom: "1rem",
   padding: "0 0.7rem",
-  // [theme.breakpoints.down("md")]: {},
+
   [theme.breakpoints.down("sm")]: {
     padding: "0 0.25rem",
+    marginBottom: "1rem",
   },
 }));
 
@@ -123,7 +131,6 @@ function DataButton({
         color: active === dataType ? "black" : "#c2e9eb",
         backgroundColor: active === dataType ? "#c2e9eb" : "black",
         borderRadius: "20px",
-        fontFamily: "Roboto",
         animation: `${fadeIn} 1s ease-in-out`,
 
         "&:hover": { backgroundColor: "gray" },
@@ -155,7 +162,7 @@ function ThirdBox({
       time: allTime[index],
     })
   );
-  
+
 
   return (
     <Box>
