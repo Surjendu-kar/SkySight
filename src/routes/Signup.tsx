@@ -14,7 +14,7 @@ const Form = styled("form")(() => ({
   },
 
   'input:-webkit-autofill': {
-    '-webkit-box-shadow': '0 0 0px 1000px white inset',
+    WebkitBoxShadow: '0 0 0px 1000px white inset',
   }
 }));
 
