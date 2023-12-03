@@ -62,7 +62,7 @@ const ButtonStyle = styled("button")(({ theme }) => ({
     fontSize: "0.6rem",
   },
   [theme.breakpoints.down("sm")]: {
-    fontSize: ".9rem",
+    fontSize: ".65rem",
     padding: "8px",
   },
 }));
