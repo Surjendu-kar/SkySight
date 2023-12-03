@@ -64,8 +64,10 @@ function SignUp() {
       return;
     }
 
-    await signup(email, password, displayName);
-    navigate("/login"); // Navigate to login page after signup
+    const err = await signup(email, password, displayName);
+    if (!err) {
+      navigate("/login"); // Navigate to login page after signup
+    }
   };
 
   return (

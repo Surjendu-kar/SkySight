@@ -43,6 +43,8 @@ export const useSignup = () => {
         // Handle or log the error differently if it's not an instance of Error
         setError("An unexpected error occurred.");
       }
+
+      return error;
     } finally {
       setIsPending(false);
     }
