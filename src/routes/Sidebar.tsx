@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { Link } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
@@ -21,17 +21,17 @@ function Sidebar() {
 
   return (
     <Container>
-      <p>
+      <Typography>
         <Link to="/home" style={{ textDecoration: "none", color: "white" }}>
           Home
         </Link>
-      </p>
-      <p
+      </Typography>
+      <Typography
         onClick={logout}
-        style={{ color: "white", cursor: "pointer" }}
+        style={{ color: "white", cursor: "pointer", marginTop: 10 }}
       >
         Logout
-      </p>
+      </Typography>
     </Container>
   );
 }

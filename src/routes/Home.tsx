@@ -94,11 +94,12 @@ const StyledInput = styled(Input)(({ theme }) => ({
 }));
 
 const StyledSkySight = styled(Typography)(({ theme }) => ({
-  fontFamily: "Roboto",
   margin: 0,
   padding: 0,
   fontSize: "2rem",
-  letterSpacing: "0.15rem",
+  fontWeight: 500,
+  letterSpacing: .5,
+
   animation: `${fadeIn} 1s ease-in-out`,
 
   [theme.breakpoints.down("lg")]: {
@@ -142,7 +143,6 @@ const fadeIn = keyframes`
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   fontSize: "1.2rem",
-  fontFamily: "Roboto",
   animation: `${fadeIn} 1s ease-in-out`,
 
   [theme.breakpoints.down("lg")]: {
@@ -390,7 +390,7 @@ function Home() {
   useEffect(() => {
     // add check to avoid unnecessary api calls
     if (userVal.trim().length > 0) return;
-    if (latitude && longitude && temp && !isAllTempLoading) return; 
+    if (latitude && longitude && temp && !isAllTempLoading) return;
 
     setIsAllTempLoading(true);
 
@@ -627,7 +627,8 @@ function Home() {
                 autoComplete="off"
               />
               {userVal && filteredCities.length > 0 && (
-                <ul
+                <Typography
+                  component='ul'
                   style={{
                     listStyleType: "none",
                     padding: 0,
@@ -646,7 +647,8 @@ function Home() {
                   }}
                 >
                   {filteredCities.map((city, index) => (
-                    <li
+                    <Typography
+                      component='li'
                       key={index}
                       style={{
                         padding: "5px 10px",
@@ -668,9 +670,9 @@ function Home() {
                       onMouseLeave={() => setSelectedSuggestionIndex(-1)}
                     >
                       {city}
-                    </li>
+                    </Typography>
                   ))}
-                </ul>
+                </Typography>
               )}
             </Box>
             {/* <Box >lan</Box> */}
@@ -697,7 +699,6 @@ function Home() {
                   sx={{
                     color: unit === "C" ? "black" : "#c2e9eb",
                     backgroundColor: unit === "C" ? "#c2e9eb" : "black",
-                    fontFamily: "Roboto",
                   }}
                   onClick={() => setUnit("C")}
                 >
@@ -707,7 +708,6 @@ function Home() {
                   sx={{
                     color: unit === "F" ? "black" : "#c2e9eb",
                     backgroundColor: unit === "F" ? "#c2e9eb" : "black",
-                    fontFamily: "Roboto",
                   }}
                   onClick={() => setUnit("F")}
                 >
